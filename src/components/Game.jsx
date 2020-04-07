@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class Game extends Component {
   render() {
-    // const {hostSocket} = l;
+    console.log(this.props);
     return <div></div>;
   }
 }
