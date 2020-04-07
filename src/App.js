@@ -1,68 +1,54 @@
 import React from 'react';
 import { Router, Link } from '@reach/router';
+import io from 'socket.io-client';
+import * as ioHandlers from './io';
 import './App.css';
-import Choose from './components/Choose';
-import Host from './components/Host';
-import Join from './components/Join';
-import Game from './components/Game';
+import NewGame from './components/NewGame';
+import JoinGame from './components/JoinGame';
+import NameInput from './components/NameInput';
 
 class App extends React.Component {
   state = {
-    playerCount: 0,
-    playerName: '',
-    host: {
-      name: '',
-      socket: {},
-    },
-    opponent: {
-      name: '',
-      socket: {},
-    },
+    name: '',
+    socket: {},
   };
 
   componentDidMount() {
-    this.reset();
+    const socket = io('localhost:9090');
+    socket.on('welcome', (msg) => {
+      console.log(msg);
+    });
+    this.setState({ socket });
   }
 
   render() {
-    console.log(this.state);
-    const { playerCount, playerName, host, opponent } = this.state;
-    if (playerCount === 2) return <Game />;
+    const { name, socket } = this.state;
     return (
       <div className="App">
-        <Link to="/">HOME</Link>
+        {name ? (
+          <>
+            {`Welcome ${name} | `}
+            <Link to="/">HOME</Link>
+            {'  |  '}
+            <Link to="/new-game">NEW GAME</Link>
+            {'  |  '}
+            <Link to="/join-game">JOIN GAME</Link>
+            <br />
+          </>
+        ) : (
+          <NameInput updateName={this.updateName} />
+        )}
+
         <Router>
-          <Choose path="/" reset={this.reset} />
-          <Host path="/host" handleNameAndSocket={this.handleNameAndSocket} />
-          <Join path="/join" handleNameAndSocket={this.handleNameAndSocket} />
+          <NewGame path="new-game" name={name} socket={socket} />
+          <JoinGame path="join-game" name={name} socket={socket} />
         </Router>
       </div>
     );
   }
 
-  reset = () => {
-    this.setState({
-      playerCount: 0,
-      playerName: '',
-      host: {
-        name: '',
-        socket: {},
-      },
-      opponent: {
-        name: '',
-        socket: {},
-      },
-    });
-  };
-
-  handleNameAndSocket = (client, details) => {
-    this.setState((currentState) => {
-      return {
-        playerCount: currentState.playerCount + 1,
-        [client]: details,
-        playerName: details.name,
-      };
-    });
+  updateName = (name) => {
+    this.setState({ name });
   };
 }
 

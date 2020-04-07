@@ -17,6 +17,7 @@ class NameInput extends Component {
               value={this.state.name}
             />
           </label>
+          <button>submit</button>
         </form>
       </div>
     );
@@ -29,7 +30,7 @@ class NameInput extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     this.setState({ name: '' });
-    this.props.updateDetails(this.state.name);
+    this.props.updateName(this.state.name);
   };
 }
 
