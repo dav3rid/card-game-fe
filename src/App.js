@@ -2,10 +2,12 @@ import React from 'react';
 import { Router, Link } from '@reach/router';
 import io from 'socket.io-client';
 import './App.css';
-import NewGame from './components/NewGame';
+import HostGame from './components/HostGame';
 import JoinGame from './components/JoinGame';
 import NameInput from './components/NameInput';
 import Game from './components/Game';
+import Nav from './components/Nav';
+import GamesList from './components/GamesList';
 
 class App extends React.Component {
   state = {
@@ -30,32 +32,23 @@ class App extends React.Component {
         {readyToStart && <Game socket={socket} gameState={gameState} />}
         {!readyToStart && (
           <>
-            {name && (
-              <>
-                {`Welcome ${name} | `}
-                <Link to="/">HOME</Link>
-                {'  |  '}
-                <Link to="/new-game">NEW GAME</Link>
-                {'  |  '}
-                <Link to="/join-game">JOIN GAME</Link>
-                <br />
-              </>
-            )}
+            <Nav name={name} />
             {!name && <NameInput updateName={this.updateName} />}
             <Router>
-              <NewGame
-                path="new-game"
+              {/* <HostGame
+                path="host-game"
                 name={name}
                 socket={socket}
                 readyToStart={this.readyToStart}
-              />
-              <JoinGame
+              /> */}
+              <GamesList path="/games" />
+              {/* <JoinGame
                 path="join-game"
                 name={name}
                 socket={socket}
                 readyToStart={this.readyToStart}
-              />
-            </Router>{' '}
+              /> */}
+            </Router>
           </>
         )}
       </div>

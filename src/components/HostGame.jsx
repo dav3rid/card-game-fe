@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
-class NewGame extends Component {
+class HostGame extends Component {
   componentDidMount() {
     const { name, socket, readyToStart } = this.props;
-    console.log(socket);
-    socket.emit('new game', name);
-    socket.on('new game', gameState => {
-      socket.emit('looking for game', gameState);
+    socket.emit('hosting game', name);
+    socket.on('opponent joining', gameState => {
+      socket.emit('ready to play', gameState);
     });
     socket.on('ready to start', gameState => {
       readyToStart(socket, gameState);
@@ -18,4 +17,4 @@ class NewGame extends Component {
   }
 }
 
-export default NewGame;
+export default HostGame;
