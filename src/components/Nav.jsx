@@ -15,7 +15,7 @@ const Nav = ({ name, updateUser }) => {
           {'  |  '}
           <button
             onClick={() => {
-              updateUser({ user_id: null, name: '' });
+              updateUser();
             }}
           >
             SIGN OUT

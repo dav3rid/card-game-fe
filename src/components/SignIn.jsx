@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import * as api from '../api';
 import Error from './Error';
 
-class NameInput extends Component {
+class SignIn extends Component {
   state = {
     name: '',
     err: null,
@@ -38,7 +38,6 @@ class NameInput extends Component {
     api
       .getUserByName(name)
       .then(user => {
-        this.setState({ name: '', err: null });
         this.props.updateUser(user);
       })
       .catch(() => {
@@ -47,4 +46,4 @@ class NameInput extends Component {
   };
 }
 
-export default NameInput;
+export default SignIn;

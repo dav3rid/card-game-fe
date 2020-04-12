@@ -42,7 +42,12 @@ class App extends React.Component {
     );
   }
 
-  updateUser = user => {
+  updateUser = (
+    user = {
+      user_id: null,
+      name: '',
+    }
+  ) => {
     this.setState({ user });
   };
 
