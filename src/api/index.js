@@ -14,10 +14,7 @@ exports.getUserByName = name => {
 
 // GAMES
 exports.getGames = () => {
-  return request
-    .get('/games')
-    .then(({ data }) => {
-      console.log(data);
-    })
-    .catch(console.log);
+  return request.get('/games?available=true').then(({ data: { games } }) => {
+    return games;
+  });
 };

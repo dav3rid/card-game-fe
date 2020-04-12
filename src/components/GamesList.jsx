@@ -5,11 +5,21 @@ class GamesList extends Component {
   state = { games: [] };
 
   componentDidMount() {
-    api.getGames();
+    api.getGames().then(games => {
+      this.setState({ games });
+    });
   }
 
   render() {
-    return <div></div>;
+    const { games } = this.state;
+    return (
+      <div>
+        {games.map(game => {
+          console.log(game);
+          return <div key={game.game_id}>{game.title}</div>;
+        })}
+      </div>
+    );
   }
 }
 

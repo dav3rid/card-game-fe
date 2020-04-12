@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '@reach/router';
 
-const Nav = ({ name }) => {
+const Nav = ({ name, updateUser }) => {
   return (
     <div>
       {name && (
@@ -11,7 +11,15 @@ const Nav = ({ name }) => {
           {'  |  '}
           <Link to="/host-game">HOST GAME</Link>
           {'  |  '}
-          <Link to="/games">ALL GAMES</Link>
+          <Link to="/games">ALL AVAILABLE GAMES</Link>
+          {'  |  '}
+          <button
+            onClick={() => {
+              updateUser({ user_id: null, name: '' });
+            }}
+          >
+            SIGN OUT
+          </button>
           <br />
         </>
       )}

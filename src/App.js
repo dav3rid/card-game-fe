@@ -2,12 +2,12 @@ import React from 'react';
 import { Router, Link } from '@reach/router';
 import io from 'socket.io-client';
 import './App.css';
+import Nav from './components/Nav';
+import SignIn from './components/SignIn';
+import GamesList from './components/GamesList';
 import HostGame from './components/HostGame';
 import JoinGame from './components/JoinGame';
-import SignIn from './components/SignIn';
 import Game from './components/Game';
-import Nav from './components/Nav';
-import GamesList from './components/GamesList';
 
 class App extends React.Component {
   state = {
@@ -16,7 +16,6 @@ class App extends React.Component {
       name: '',
     },
     socket: {},
-    gameState: {},
     readyToStart: false,
   };
 
@@ -29,33 +28,16 @@ class App extends React.Component {
     const {
       user: { user_id, name },
       socket,
-      gameState,
       readyToStart,
     } = this.state;
     return (
       <div className="App">
-        {readyToStart && <Game socket={socket} gameState={gameState} />}
-        {!readyToStart && (
-          <>
-            <Nav name={name} />
-            {!user_id && <SignIn updateUser={this.updateUser} />}
-            <Router>
-              {/* <HostGame
-                path="host-game"
-                name={name}
-                socket={socket}
-                readyToStart={this.readyToStart}
-              /> */}
-              <GamesList path="/games" />
-              {/* <JoinGame
-                path="join-game"
-                name={name}
-                socket={socket}
-                readyToStart={this.readyToStart}
-              /> */}
-            </Router>
-          </>
-        )}
+        <Nav name={name} updateUser={this.updateUser} />
+        {!user_id && <SignIn updateUser={this.updateUser} />}
+        {readyToStart && <Game socket={socket} />}
+        <Router>
+          <GamesList path="/games" />
+        </Router>
       </div>
     );
   }
