@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import * as api from '../api';
+import Error from './Error';
 
 class NameInput extends Component {
   state = {
     name: '',
+    err: null,
   };
   render() {
+    const { err } = this.state;
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -19,6 +23,7 @@ class NameInput extends Component {
           </label>
           <button>submit</button>
         </form>
+        {err && <Error msg={err} />}
       </div>
     );
   }
@@ -27,10 +32,18 @@ class NameInput extends Component {
     this.setState({ name: value });
   };
 
-  handleSubmit = (event) => {
+  handleSubmit = event => {
+    const { name } = this.state;
     event.preventDefault();
-    this.setState({ name: '' });
-    this.props.updateName(this.state.name);
+    api
+      .getUserByName(name)
+      .then(user => {
+        this.setState({ name: '', err: null });
+        this.props.updateUser(user);
+      })
+      .catch(() => {
+        this.setState({ err: 'User not found' });
+      });
   };
 }
 

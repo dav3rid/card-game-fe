@@ -4,36 +4,41 @@ import io from 'socket.io-client';
 import './App.css';
 import HostGame from './components/HostGame';
 import JoinGame from './components/JoinGame';
-import NameInput from './components/NameInput';
+import SignIn from './components/SignIn';
 import Game from './components/Game';
 import Nav from './components/Nav';
 import GamesList from './components/GamesList';
 
 class App extends React.Component {
   state = {
-    name: '',
+    user: {
+      user_id: null,
+      name: '',
+    },
     socket: {},
     gameState: {},
     readyToStart: false,
   };
 
   componentDidMount() {
-    const socket = io('localhost:9090');
-    socket.on('welcome', msg => {
-      console.log(msg);
-    });
+    const socket = io('https://shed-card-game.herokuapp.com/api');
     this.setState({ socket });
   }
 
   render() {
-    const { name, socket, gameState, readyToStart } = this.state;
+    const {
+      user: { user_id, name },
+      socket,
+      gameState,
+      readyToStart,
+    } = this.state;
     return (
       <div className="App">
         {readyToStart && <Game socket={socket} gameState={gameState} />}
         {!readyToStart && (
           <>
             <Nav name={name} />
-            {!name && <NameInput updateName={this.updateName} />}
+            {!user_id && <SignIn updateUser={this.updateUser} />}
             <Router>
               {/* <HostGame
                 path="host-game"
@@ -55,8 +60,8 @@ class App extends React.Component {
     );
   }
 
-  updateName = name => {
-    this.setState({ name });
+  updateUser = user => {
+    this.setState({ user });
   };
 
   readyToStart = (socket, gameState) => {
