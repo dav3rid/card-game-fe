@@ -19,7 +19,8 @@ exports.postUser = name => {
 };
 
 // GAMES
-exports.getGames = () => {
+exports.getAvailableGames = () => {
+  console.log('making api call');
   return request.get('/games?available=true').then(({ data: { games } }) => {
     return games;
   });

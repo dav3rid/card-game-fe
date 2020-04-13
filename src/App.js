@@ -1,12 +1,12 @@
 import React from 'react';
-import { Router, Link } from '@reach/router';
+import { Router } from '@reach/router';
 import io from 'socket.io-client';
 import './App.css';
 import Nav from './components/Nav';
 import Login from './components/Login';
 import GamesList from './components/GamesList';
-import HostGame from './components/HostGame';
-import JoinGame from './components/JoinGame';
+// import HostGame from './components/HostGame';
+// import JoinGame from './components/JoinGame';
 import Game from './components/Game';
 
 class App extends React.Component {
@@ -32,8 +32,11 @@ class App extends React.Component {
     } = this.state;
     return (
       <div className="App">
-        {!user_id && <Login updateUser={this.updateUser} />}
-        <Nav name={name} updateUser={this.updateUser} />
+        {user_id ? (
+          <Nav name={name} signOut={this.updateUser} />
+        ) : (
+          <Login updateUser={this.updateUser} />
+        )}
         {readyToStart && <Game socket={socket} />}
         <Router>
           <GamesList path="/games" />

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from '@reach/router';
 
-const Nav = ({ name, updateUser }) => {
+const Nav = ({ name, signOut }) => {
   return (
     <div>
       {name && (
@@ -13,13 +13,7 @@ const Nav = ({ name, updateUser }) => {
           {'  |  '}
           <Link to="/games">ALL AVAILABLE GAMES</Link>
           {'  |  '}
-          <button
-            onClick={() => {
-              updateUser();
-            }}
-          >
-            SIGN OUT
-          </button>
+          <button onClick={() => signOut()}>SIGN OUT</button>
           <br />
         </>
       )}

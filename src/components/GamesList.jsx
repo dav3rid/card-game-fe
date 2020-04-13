@@ -5,13 +5,15 @@ class GamesList extends Component {
   state = { games: [] };
 
   componentDidMount() {
-    api.getGames().then(games => {
+    api.getAvailableGames().then(games => {
       this.setState({ games });
     });
   }
 
   render() {
     const { games } = this.state;
+    console.log('in games list render');
+    console.log(games);
     return (
       <div>
         {games.map(game => {

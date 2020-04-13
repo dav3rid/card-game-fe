@@ -48,7 +48,7 @@ class Login extends Component {
     const { name } = this.state;
     api
       .postUser(name)
-      .then(user => {
+      .then(() => {
         this.handleSignIn();
       })
       .catch(() => {
