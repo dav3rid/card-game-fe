@@ -10,6 +10,7 @@ import GamesList from './components/GamesList';
 import Game from './components/Game';
 
 class App extends React.Component {
+  // STRICT MODE OFF IN INDEX.JS - DOUBLE LIFECYCLES
   state = {
     user: {
       user_id: null,
@@ -20,11 +21,13 @@ class App extends React.Component {
   };
 
   componentDidMount() {
+    console.log('App mount');
     const socket = io('https://card-game-be.herokuapp.com/api');
     this.setState({ socket });
   }
 
   render() {
+    console.log('App render');
     const {
       user: { user_id, name },
       socket,
@@ -32,15 +35,17 @@ class App extends React.Component {
     } = this.state;
     return (
       <div className="App">
-        {user_id ? (
-          <Nav name={name} signOut={this.updateUser} />
-        ) : (
+        {!user_id ? (
           <Login updateUser={this.updateUser} />
+        ) : (
+          <>
+            <Nav name={name} signOut={this.updateUser} />
+            <Router>
+              <GamesList path="/games" />
+            </Router>
+          </>
         )}
         {readyToStart && <Game socket={socket} />}
-        <Router>
-          <GamesList path="/games" />
-        </Router>
       </div>
     );
   }
