@@ -3,7 +3,7 @@ import { Router, Link } from '@reach/router';
 import io from 'socket.io-client';
 import './App.css';
 import Nav from './components/Nav';
-import SignIn from './components/SignIn';
+import Login from './components/Login';
 import GamesList from './components/GamesList';
 import HostGame from './components/HostGame';
 import JoinGame from './components/JoinGame';
@@ -20,7 +20,7 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    const socket = io('https://shed-card-game.herokuapp.com/api');
+    const socket = io('https://card-game-be.herokuapp.com/api');
     this.setState({ socket });
   }
 
@@ -32,8 +32,8 @@ class App extends React.Component {
     } = this.state;
     return (
       <div className="App">
+        {!user_id && <Login updateUser={this.updateUser} />}
         <Nav name={name} updateUser={this.updateUser} />
-        {!user_id && <SignIn updateUser={this.updateUser} />}
         {readyToStart && <Game socket={socket} />}
         <Router>
           <GamesList path="/games" />

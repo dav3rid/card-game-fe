@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const request = axios.create({
-  baseURL: 'https://shed-card-game.herokuapp.com/api',
+  baseURL: 'https://card-game-be.herokuapp.com/api',
 });
 
 // USERS
@@ -9,6 +9,12 @@ const request = axios.create({
 exports.getUserByName = name => {
   return request.get(`/users/${name}`).then(({ data: { user } }) => {
     return user;
+  });
+};
+
+exports.postUser = name => {
+  return request.post('/users', { name }).then(({ data }) => {
+    return data;
   });
 };
 
