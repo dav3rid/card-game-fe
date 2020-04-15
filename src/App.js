@@ -5,7 +5,7 @@ import './App.css';
 import Nav from './components/Nav';
 import Login from './components/Login';
 import GamesList from './components/GamesList';
-// import HostGame from './components/HostGame';
+import HostGame from './components/HostGame';
 // import JoinGame from './components/JoinGame';
 import Game from './components/Game';
 
@@ -42,6 +42,7 @@ class App extends React.Component {
             <Nav name={name} signOut={this.updateUser} />
             <Router>
               <GamesList path="/games" />
+              <HostGame path="/host-game" user_id={user_id} />
             </Router>
           </>
         )}

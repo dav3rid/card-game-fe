@@ -20,8 +20,17 @@ exports.postUser = name => {
 
 // GAMES
 exports.getAvailableGames = () => {
-  console.log('making api call');
   return request.get('/games?available=true').then(({ data: { games } }) => {
     return games;
   });
+};
+
+exports.hostGame = gameInfo => {
+  console.log(gameInfo);
+  return request
+    .post('/games', gameInfo)
+    .then(({ data: { game } }) => {
+      console.log(game);
+    })
+    .catch(console.log);
 };

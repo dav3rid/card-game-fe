@@ -1,20 +1,39 @@
 import React, { Component } from 'react';
+import * as api from '../api';
 
 class HostGame extends Component {
-  componentDidMount() {
-    const { name, socket, readyToStart } = this.props;
-    socket.emit('hosting game', name);
-    socket.on('opponent joining', gameState => {
-      socket.emit('ready to play', gameState);
-    });
-    socket.on('ready to start', gameState => {
-      readyToStart(socket, gameState);
-    });
-  }
+  state = {
+    title: '',
+  };
 
   render() {
-    return <div>Hosting Game</div>;
+    const { title } = this.state;
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Enter game title:{' '}
+          <input
+            type="text"
+            id="title-input"
+            onChange={this.handleChange}
+            value={title}
+          />
+        </label>
+        <button>Host game</button>
+      </form>
+    );
   }
+
+  handleChange = ({ target: { value } }) => {
+    this.setState({ title: value });
+  };
+
+  handleSubmit = event => {
+    event.preventDefault();
+    const { title } = this.state;
+    const { user_id } = this.props;
+    api.hostGame({ title, host_id: user_id });
+  };
 }
 
 export default HostGame;
