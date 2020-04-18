@@ -17,12 +17,14 @@ class App extends React.Component {
       name: '',
     },
     socket: {},
-    readyToStart: false,
   };
 
   componentDidMount() {
     console.log('App mount');
-    const socket = io('https://card-game-be.herokuapp.com/api');
+    const socket = io('https://card-game-be.herokuapp.com');
+    socket.on('welcome', ({ msg }) => {
+      console.log(msg);
+    });
     this.setState({ socket });
   }
 
@@ -31,7 +33,6 @@ class App extends React.Component {
     const {
       user: { user_id, name },
       socket,
-      readyToStart,
     } = this.state;
     return (
       <div className="App">
@@ -41,12 +42,17 @@ class App extends React.Component {
           <>
             <Nav name={name} signOut={this.updateUser} />
             <Router>
-              <GamesList path="/games" />
-              <HostGame path="/host-game" user_id={user_id} />
+              <GamesList
+                path="/games"
+                socket={socket}
+                startGame={this.startGame}
+              />
+              <HostGame path="/host-game" user_id={user_id} socket={socket} />
+              <Game path="/games/:game_id" socket={socket} />
             </Router>
           </>
         )}
-        {readyToStart && <Game socket={socket} />}
+        {/* {activeGameID && <Game socket={socket} activeGameID={activeGameID} />} */}
       </div>
     );
   }
@@ -58,10 +64,6 @@ class App extends React.Component {
     }
   ) => {
     this.setState({ user });
-  };
-
-  readyToStart = (socket, gameState) => {
-    this.setState({ socket, gameState, readyToStart: true });
   };
 }
 

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 class Game extends Component {
   render() {
-    console.log(this.props);
+    const { game_id } = this.props;
+    console.log('In Game render', game_id);
     return <div></div>;
   }
 }

@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import * as api from '../api';
+import Error from './Error';
 
 class HostGame extends Component {
   state = {
     title: '',
+    err: null,
+    waitingForOpponent: false,
   };
 
   render() {
-    const { title } = this.state;
+    const { title, err } = this.state;
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div>
         <label>
           Enter game title:{' '}
           <input
@@ -19,8 +22,10 @@ class HostGame extends Component {
             value={title}
           />
         </label>
-        <button>Host game</button>
-      </form>
+        <button onClick={this.handleSubmit}>Host game</button>
+        <button onClick={this.handleDelete}>Delete current game</button>
+        {err && <Error msg={err} />}
+      </div>
     );
   }
 
@@ -29,10 +34,25 @@ class HostGame extends Component {
   };
 
   handleSubmit = event => {
-    event.preventDefault();
     const { title } = this.state;
+    const { user_id, navigate, socket } = this.props;
+    api
+      .hostGame({ title, host_id: user_id })
+      .then(game_id => {
+        console.log(`hosting game_id: ${game_id}`);
+        socket.on('join game', () => {
+          console.log('opponentJoined');
+          navigate(`/games/${game_id}`);
+        });
+      })
+      .catch(() => {
+        this.setState({ err: 'This host already has an active session.' });
+      });
+  };
+
+  handleDelete = () => {
     const { user_id } = this.props;
-    api.hostGame({ title, host_id: user_id });
+    api.deleteGame(user_id);
   };
 }
 

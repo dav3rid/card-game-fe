@@ -26,11 +26,17 @@ exports.getAvailableGames = () => {
 };
 
 exports.hostGame = gameInfo => {
-  console.log(gameInfo);
-  return request
-    .post('/games', gameInfo)
-    .then(({ data: { game } }) => {
-      console.log(game);
-    })
-    .catch(console.log);
+  return request.post('/games', gameInfo).then(
+    ({
+      data: {
+        game: { game_id },
+      },
+    }) => {
+      return game_id;
+    }
+  );
+};
+
+exports.deleteGame = host_id => {
+  return request.delete(`/games?host_id=${host_id}`);
 };

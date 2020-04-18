@@ -18,11 +18,28 @@ class GamesList extends Component {
       <div>
         {games.map(game => {
           console.log(game);
-          return <div key={game.game_id}>{game.title}</div>;
+          return (
+            <div key={game.game_id}>
+              {game.title}
+              <button
+                onClick={() => {
+                  this.handleJoin(game.game_id);
+                }}
+              >
+                Join Game
+              </button>
+            </div>
+          );
         })}
       </div>
     );
   }
+
+  handleJoin = game_id => {
+    const { socket, startGame, navigate } = this.props;
+    socket.emit('join game', { game_id });
+    navigate(`/games/${game_id}`);
+  };
 }
 
 export default GamesList;
