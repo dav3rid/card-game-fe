@@ -10,9 +10,11 @@ class Game extends Component {
   };
 
   componentDidMount() {
-    const { game_id } = this.props;
+    const { game_id, user_id } = this.props;
     api.getGameById(game_id).then(game => {
       console.log(game);
+      if (user_id === game.host_id) {
+      }
     });
   }
 
