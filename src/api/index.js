@@ -19,6 +19,12 @@ exports.postUser = name => {
 };
 
 // GAMES
+exports.getGameById = game_id => {
+  return request.get(`/games/${game_id}`).then(({ data: { game } }) => {
+    return game;
+  });
+};
+
 exports.getAvailableGames = () => {
   return request.get('/games?available=true').then(({ data: { games } }) => {
     return games;
@@ -35,6 +41,15 @@ exports.hostGame = gameInfo => {
       return game_id;
     }
   );
+};
+
+exports.joinGame = (game_id, opponent_id) => {
+  console.log(opponent_id);
+  return request
+    .patch(`/games/${game_id}`, { opponent_id })
+    .then(({ data }) => {
+      console.log(data);
+    });
 };
 
 exports.deleteGame = host_id => {

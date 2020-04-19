@@ -13,11 +13,10 @@ class GamesList extends Component {
   render() {
     const { games } = this.state;
     console.log('in games list render');
-    console.log(games);
+    // console.log(games);
     return (
       <div>
         {games.map(game => {
-          console.log(game);
           return (
             <div key={game.game_id}>
               {game.title}
@@ -36,9 +35,11 @@ class GamesList extends Component {
   }
 
   handleJoin = game_id => {
-    const { socket, startGame, navigate } = this.props;
-    socket.emit('join game', { game_id });
-    navigate(`/games/${game_id}`);
+    const { user_id, socket, navigate } = this.props;
+    api.joinGame(game_id, user_id).then(() => {
+      socket.emit('join game', { game_id });
+      navigate(`/games/${game_id}`);
+    });
   };
 }
 

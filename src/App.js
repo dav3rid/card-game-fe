@@ -42,13 +42,9 @@ class App extends React.Component {
           <>
             <Nav name={name} signOut={this.updateUser} />
             <Router>
-              <GamesList
-                path="/games"
-                socket={socket}
-                startGame={this.startGame}
-              />
+              <GamesList path="/games" user_id={user_id} socket={socket} />
               <HostGame path="/host-game" user_id={user_id} socket={socket} />
-              <Game path="/games/:game_id" socket={socket} />
+              <Game path="/games/:game_id" user_id={user_id} socket={socket} />
             </Router>
           </>
         )}
