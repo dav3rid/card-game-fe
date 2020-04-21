@@ -44,12 +44,15 @@ exports.hostGame = gameInfo => {
 };
 
 exports.joinGame = (game_id, opponent_id) => {
-  console.log(opponent_id);
-  return request
-    .patch(`/games/${game_id}`, { opponent_id })
-    .then(({ data }) => {
-      console.log(data);
-    });
+  return request.patch(`/games/${game_id}`, { opponent_id }).then(
+    ({
+      data: {
+        game: { host_id },
+      },
+    }) => {
+      return host_id;
+    }
+  );
 };
 
 exports.deleteGame = host_id => {

@@ -43,9 +43,9 @@ class HostGame extends Component {
     api
       .hostGame({ title, host_id: user_id, game_state })
       .then(game_id => {
-        socket.on('join game', () => {
+        socket.on('join game', ({ host_id }) => {
           console.log('opponentJoined');
-          navigate(`/games/${game_id}`);
+          if (host_id === user_id) navigate(`/games/${game_id}`);
         });
         this.setState({ waitingForOpponent: true });
       })
@@ -56,7 +56,9 @@ class HostGame extends Component {
 
   handleDelete = () => {
     const { user_id } = this.props;
-    api.deleteGame(user_id);
+    api.deleteGame(user_id).then(() => {
+      this.setState({ err: 'Game deleted.' });
+    });
   };
 }
 

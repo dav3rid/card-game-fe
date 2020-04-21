@@ -5,8 +5,8 @@ import * as api from '../api';
 const GameCard = ({ game, user_id, navigate }) => {
   const handleJoin = () => {
     const { game_id } = game;
-    api.joinGame(game_id, user_id).then(() => {
-      socket.emit('join game', { game_id });
+    api.joinGame(game_id, user_id).then(host_id => {
+      socket.emit('join game', { game_id, host_id });
       navigate(`/games/${game_id}`);
     });
   };

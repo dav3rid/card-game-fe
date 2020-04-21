@@ -19,7 +19,14 @@ class GamesList extends Component {
     return (
       <div>
         {games.map(game => {
-          return <GameCard game={game} user_id={user_id} navigate={navigate} />;
+          return (
+            <GameCard
+              game={game}
+              user_id={user_id}
+              navigate={navigate}
+              key={game.game_id}
+            />
+          );
         })}
       </div>
     );
