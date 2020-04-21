@@ -1,6 +1,5 @@
 import React from 'react';
 import { Router } from '@reach/router';
-import io from 'socket.io-client';
 import './App.css';
 import Nav from './components/Nav';
 import Login from './components/Login';
@@ -8,7 +7,6 @@ import GamesList from './components/GamesList';
 import HostGame from './components/HostGame';
 // import JoinGame from './components/JoinGame';
 import Game from './components/Game';
-import socket from './api/socket.js';
 
 class App extends React.Component {
   // STRICT MODE OFF IN INDEX.JS - DOUBLE LIFECYCLES
@@ -17,23 +15,21 @@ class App extends React.Component {
       user_id: null,
       name: '',
     },
-    socket: {},
   };
 
-  componentDidMount() {
-    console.log('App mount');
-    const socket = io('https://card-game-be.herokuapp.com');
-    socket.on('welcome', ({ msg }) => {
-      console.log(msg);
-    });
-    this.setState({ socket });
-  }
+  // componentDidMount() {
+  //   console.log('App mount');
+  //   const socket = io('https://card-game-be.herokuapp.com');
+  //   socket.on('welcome', ({ msg }) => {
+  //     console.log(msg);
+  //   });
+  //   this.setState({ socket });
+  // }
 
   render() {
     console.log('App render');
     const {
       user: { user_id, name },
-      socket,
     } = this.state;
     return (
       <div className="App">
@@ -43,9 +39,9 @@ class App extends React.Component {
           <>
             <Nav name={name} signOut={this.updateUser} />
             <Router>
-              <GamesList path="/games" user_id={user_id} socket={socket} />
-              <HostGame path="/host-game" user_id={user_id} socket={socket} />
-              <Game path="/games/:game_id" user_id={user_id} socket={socket} />
+              <GamesList path="/games" user_id={user_id} />
+              <HostGame path="/host-game" user_id={user_id} />
+              <Game path="/games/:game_id" user_id={user_id} />
             </Router>
           </>
         )}

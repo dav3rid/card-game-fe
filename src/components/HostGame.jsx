@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import socket from '../api/socket.js';
 import * as api from '../api';
 import * as game from '../game';
 import Error from './Error';
@@ -6,8 +7,8 @@ import Error from './Error';
 class HostGame extends Component {
   state = {
     title: '',
-    err: null,
     waitingForOpponent: false,
+    err: null,
   };
 
   render() {
@@ -37,7 +38,7 @@ class HostGame extends Component {
 
   handleSubmit = event => {
     const { title } = this.state;
-    const { user_id, navigate, socket } = this.props;
+    const { user_id, navigate } = this.props;
     const game_state = game.getNewGameState();
     api
       .hostGame({ title, host_id: user_id, game_state })

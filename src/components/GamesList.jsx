@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import socket from '../api/socket.js';
 import * as api from '../api';
 
 class GamesList extends Component {
@@ -35,7 +36,7 @@ class GamesList extends Component {
   }
 
   handleJoin = game_id => {
-    const { user_id, socket, navigate } = this.props;
+    const { user_id, navigate } = this.props;
     api.joinGame(game_id, user_id).then(() => {
       socket.emit('join game', { game_id });
       navigate(`/games/${game_id}`);
