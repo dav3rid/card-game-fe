@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import socket from '../api/socket.js';
 import * as api from '../api';
+import GameCard from './GameCard';
 
 class GamesList extends Component {
   state = { games: [] };
@@ -13,35 +13,17 @@ class GamesList extends Component {
 
   render() {
     const { games } = this.state;
+    const { user_id, navigate } = this.props;
     console.log('in games list render');
     // console.log(games);
     return (
       <div>
         {games.map(game => {
-          return (
-            <div key={game.game_id}>
-              {game.title}
-              <button
-                onClick={() => {
-                  this.handleJoin(game.game_id);
-                }}
-              >
-                Join Game
-              </button>
-            </div>
-          );
+          return <GameCard game={game} user_id={user_id} navigate={navigate} />;
         })}
       </div>
     );
   }
-
-  handleJoin = game_id => {
-    const { user_id, navigate } = this.props;
-    api.joinGame(game_id, user_id).then(() => {
-      socket.emit('join game', { game_id });
-      navigate(`/games/${game_id}`);
-    });
-  };
 }
 
 export default GamesList;
