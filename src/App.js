@@ -8,6 +8,7 @@ import GamesList from './components/GamesList';
 import HostGame from './components/HostGame';
 // import JoinGame from './components/JoinGame';
 import Game from './components/Game';
+import socket from './api/socket.js';
 
 class App extends React.Component {
   // STRICT MODE OFF IN INDEX.JS - DOUBLE LIFECYCLES

@@ -11,7 +11,8 @@ class HostGame extends Component {
   };
 
   render() {
-    const { title, err } = this.state;
+    const { title, err, waitingForOpponent } = this.state;
+    if (waitingForOpponent) return <h1>Waiting for opponent</h1>;
     return (
       <div>
         <label>
@@ -41,11 +42,11 @@ class HostGame extends Component {
     api
       .hostGame({ title, host_id: user_id, game_state })
       .then(game_id => {
-        console.log(`hosting game_id: ${game_id}`);
         socket.on('join game', () => {
           console.log('opponentJoined');
           navigate(`/games/${game_id}`);
         });
+        this.setState({ waitingForOpponent: true });
       })
       .catch(() => {
         this.setState({ err: 'This host already has an active session.' });

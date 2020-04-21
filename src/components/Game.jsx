@@ -21,7 +21,18 @@ class Game extends Component {
   render() {
     const { game_id } = this.props;
     console.log('In Game render', game_id);
-    return <div></div>;
+    return (
+      <div className="board">
+        {/* <OpponentHand cards={opponentHand} isOpponentTurn={!isPlayerTurn} />
+        <OpponentFinalHand cards={opponentFinalHand} />
+        <BurnedDeck />
+        <PickupDeck cards={currentGameDeck} />
+        <PlayableDeck cards={playableDeck} />
+        <div className="blank">BLANK</div>
+        <PlayerFinalHand cards={playerFinalHand} />
+        <PlayerHand cards={playerHand} isPlayerTurn={isPlayerTurn} /> */}
+      </div>
+    );
   }
 }
 
