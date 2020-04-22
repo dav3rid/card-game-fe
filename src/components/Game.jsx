@@ -7,25 +7,36 @@ class Game extends Component {
     opponent_id: null,
     current_turn_id: null,
     game_state: {},
+    playerRole: null,
   };
 
   componentDidMount() {
-    const { game_id } = this.props;
+    const { user_id, game_id } = this.props;
     api
       .getGameById(game_id)
       .then(({ host_id, opponent_id, current_turn_id, game_state }) => {
-        this.setState({ host_id, opponent_id, current_turn_id, game_state });
+        const playerRole = user_id === host_id ? 'host' : 'opponent';
+        this.setState({
+          host_id,
+          opponent_id,
+          current_turn_id,
+          game_state,
+          playerRole,
+        });
       });
   }
 
   render() {
-    const { game_id, user_id } = this.props;
+    const { game_id, game_state } = this.props;
+    const { playerRole } = this.state;
     console.log('In Game render', game_id);
     console.dir(this.state);
+    console.log(playerRole);
     return (
       <div className="board">
-        {/* <OpponentHand cards={opponentHand} isOpponentTurn={!isPlayerTurn} />
-        <OpponentFinalHand cards={opponentFinalHand} />
+        {/* <EnemyHand cards={} isOpponentTurn={!isPlayerTurn} />
+        <PlayerHand cards={playerHand} isPlayerTurn={isPlayerTurn} /> */}
+        {/* <OpponentFinalHand cards={opponentFinalHand} />
         <BurnedDeck />
         <PickupDeck cards={currentGameDeck} />
         <PlayableDeck cards={playableDeck} />
