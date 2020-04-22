@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import * as api from '../api';
+import PlayerHand from './board/PlayerHand';
+import EnemyHand from './board/EnemyHand';
 
 class Game extends Component {
   state = {
@@ -16,26 +18,30 @@ class Game extends Component {
       .getGameById(game_id)
       .then(({ host_id, opponent_id, current_turn_id, game_state }) => {
         const playerRole = user_id === host_id ? 'host' : 'opponent';
+        const enemyRole = user_id === host_id ? 'opponent' : 'host';
         this.setState({
           host_id,
           opponent_id,
           current_turn_id,
           game_state,
           playerRole,
+          enemyRole,
         });
       });
   }
 
   render() {
-    const { game_id, game_state } = this.props;
-    const { playerRole } = this.state;
-    console.log('In Game render', game_id);
-    console.dir(this.state);
-    console.log(playerRole);
+    const { game_id } = this.props;
+    const { playerRole, enemyRole, game_state } = this.state;
+    console.log(game_state);
+    console.log(game_state[`${playerRole}Hand`]);
+    console.log(game_state[`${playerRole}FinalHand`]);
+    console.log(game_state[`${playerRole}PenultimateHand`]);
+
     return (
       <div className="board">
-        {/* <EnemyHand cards={} isOpponentTurn={!isPlayerTurn} />
-        <PlayerHand cards={playerHand} isPlayerTurn={isPlayerTurn} /> */}
+        <EnemyHand cards={game_state[`${enemyRole}Hand`]} />
+        <PlayerHand cards={game_state[`${playerRole}Hand`]} />
         {/* <OpponentFinalHand cards={opponentFinalHand} />
         <BurnedDeck />
         <PickupDeck cards={currentGameDeck} />
