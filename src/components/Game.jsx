@@ -6,21 +6,22 @@ class Game extends Component {
     host_id: null,
     opponent_id: null,
     current_turn_id: null,
-    gameState: {},
+    game_state: {},
   };
 
   componentDidMount() {
-    const { game_id, user_id } = this.props;
-    api.getGameById(game_id).then(game => {
-      console.log(game);
-      if (user_id === game.host_id) {
-      }
-    });
+    const { game_id } = this.props;
+    api
+      .getGameById(game_id)
+      .then(({ host_id, opponent_id, current_turn_id, game_state }) => {
+        this.setState({ host_id, opponent_id, current_turn_id, game_state });
+      });
   }
 
   render() {
-    const { game_id } = this.props;
+    const { game_id, user_id } = this.props;
     console.log('In Game render', game_id);
+    console.dir(this.state);
     return (
       <div className="board">
         {/* <OpponentHand cards={opponentHand} isOpponentTurn={!isPlayerTurn} />
