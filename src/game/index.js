@@ -78,13 +78,17 @@ exports.getNewGameState = () => {
   const opponentHand = newDeck.splice(-6, 6);
 
   return {
-    hostHand,
-    opponentHand,
-    hostFinalHand,
-    opponentFinalHand,
-    hostPenultimateHand: [],
-    opponentPenultimateHand: [],
-    currentGameDeck: newDeck,
+    host: {
+      hand: hostHand,
+      penultimateHand: [],
+      finalHand: hostFinalHand,
+    },
+    opponent: {
+      hand: opponentHand,
+      penultimateHand: [],
+      finalHand: opponentFinalHand,
+    },
+    pickupDeck: newDeck,
     playableDeck: [],
     topCardValue: 0,
   };
