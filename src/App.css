@@ -18,13 +18,13 @@ img {
   margin-right: 2px;
 }
 
-.opponent-hand {
+.enemy-hand {
   grid-area: 1 / 1 / 2 / 4;
   background-color: darkviolet;
   overflow-x: auto;
 }
 
-.opponent-final-hand {
+.enemy-final-hand {
   grid-area: 1 / 4 / 2 / 5;
   background-color: burlywood;
   overflow-x: auto;

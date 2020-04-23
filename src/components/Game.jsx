@@ -40,7 +40,7 @@ class Game extends Component {
 
     return (
       <div className="board">
-        {/* <EnemyHand cards={game_state[`${enemyRole}Hand`]} /> */}
+        <EnemyHand cards={game_state[`${enemyRole}Hand`]} />
         <PlayerHand cards={game_state[`${playerRole}Hand`]} />
         {/* <OpponentFinalHand cards={opponentFinalHand} />
         <BurnedDeck />
