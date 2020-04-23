@@ -1,7 +1,7 @@
 import React from 'react';
 import images from '../../images';
 
-const Card = ({ card }) => {
+const Card = ({ card = 'back' }) => {
   return <img src={images[card]} alt={card} />;
   // pass function in
 };

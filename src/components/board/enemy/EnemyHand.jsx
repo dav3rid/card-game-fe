@@ -5,7 +5,7 @@ const EnemyHand = ({ cards = [] }) => {
   return (
     <div className="enemy-hand">
       {cards.map(card => {
-        return <Card card={card} key={card} />;
+        return <Card key={card} />;
       })}
       <br />
       Enemy Hand

@@ -5,7 +5,7 @@ const PlayerFinalHand = ({ cards = [] }) => {
   return (
     <div className="player-final-hand">
       {cards.map(card => {
-        return <Card card={card} key={card} />;
+        return <Card key={card} />;
       })}
       <br />
       Player Final Hand

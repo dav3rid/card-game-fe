@@ -5,10 +5,10 @@ const EnemyFinalHand = ({ cards = [] }) => {
   return (
     <div className="enemy-final-hand">
       {cards.map(card => {
-        return <Card card={card} key={card} />;
+        return <Card key={card} />;
       })}
       <br />
-      Enemy Hand
+      Enemy Final Hand
       {/* {isPlayerTurn && <h4>Your turn!</h4>} */}
     </div>
   );

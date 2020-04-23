@@ -7,7 +7,7 @@ import PlayerHand from './player/PlayerHand';
 import PlayerPenultimateHand from './player/PlayerPenultimateHand';
 import PlayerFinalHand from './player/PlayerFinalHand';
 
-const Cards = ({ role, cards: { hand, penultimateHand, finalHand } }) => {
+const Section = ({ role, cards: { hand, penultimateHand, finalHand } }) => {
   if (role === 'enemy') {
     return (
       <>
@@ -27,4 +27,4 @@ const Cards = ({ role, cards: { hand, penultimateHand, finalHand } }) => {
   }
 };
 
-export default Cards;
+export default Section;

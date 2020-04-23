@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as api from '../api';
-import Cards from './board/Cards';
+import Section from './board/Section';
 
 class Game extends Component {
   state = {
@@ -34,20 +34,13 @@ class Game extends Component {
     const { playerRole, enemyRole, game_state } = this.state;
     return (
       <div className="board">
-        <Cards role="enemy" cards={game_state[enemyRole] || {}} />
+        <Section role="enemy" cards={game_state[enemyRole] || {}} />
         {/* <Cards role="neutral" cards={game_state[enemyRole] || {}} /> */}
         <div className="burned-deck">BURNED DECK</div>
         <div className="pickup-deck">PICKUP DECK</div>
         <div className="playable-deck">PLAYABLE DECK</div>
         <div className="feed">feed</div>
-        <Cards role="player" cards={game_state[playerRole] || {}} />
-        {/* <OpponentFinalHand cards={opponentFinalHand} />
-        <BurnedDeck />
-        <PickupDeck cards={currentGameDeck} />
-        <PlayableDeck cards={playableDeck} />
-        <div className="blank">BLANK</div>
-        <PlayerFinalHand cards={playerFinalHand} />
-        <PlayerHand cards={playerHand} isPlayerTurn={isPlayerTurn} /> */}
+        <Section role="player" cards={game_state[playerRole] || {}} />
       </div>
     );
   }
