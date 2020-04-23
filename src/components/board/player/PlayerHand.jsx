@@ -1,18 +1,12 @@
 import React from 'react';
-import images from '../../images';
+import images from '../../../images';
+import Card from '../Card';
 
 const PlayerHand = ({ cards = [] }) => {
   return (
     <div className="player-hand">
       {cards.map(card => {
-        return (
-          <img
-            src={images[card]}
-            alt={card}
-            key={card}
-            // onClick={() => playCard(value, isPower)}
-          />
-        );
+        return <Card card={card} key={card} />;
       })}
       <br />
       Player Hand

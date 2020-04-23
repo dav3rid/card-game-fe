@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import * as api from '../api';
-import PlayerHand from './board/PlayerHand';
-import EnemyHand from './board/EnemyHand';
+import PlayerCards from './board/player/PlayerCards';
+import EnemyCards from './board/enemy/EnemyCards';
 
 class Game extends Component {
   state = {
     host_id: null,
     opponent_id: null,
     current_turn_id: null,
-    game_state: {},
+    game_state: { host: {}, opponent: {} },
     playerRole: null,
   };
 
@@ -33,15 +33,10 @@ class Game extends Component {
   render() {
     const { game_id } = this.props;
     const { playerRole, enemyRole, game_state } = this.state;
-    console.log(game_state);
-    console.log(game_state[`${playerRole}Hand`]);
-    console.log(game_state[`${playerRole}FinalHand`]);
-    console.log(game_state[`${playerRole}PenultimateHand`]);
-
     return (
       <div className="board">
-        <EnemyHand cards={game_state[`${enemyRole}Hand`]} />
-        <PlayerHand cards={game_state[`${playerRole}Hand`]} />
+        <EnemyCards cards={game_state[enemyRole] || {}} />
+        <PlayerCards cards={game_state[playerRole] || {}} />
         {/* <OpponentFinalHand cards={opponentFinalHand} />
         <BurnedDeck />
         <PickupDeck cards={currentGameDeck} />
