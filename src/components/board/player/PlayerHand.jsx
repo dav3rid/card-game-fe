@@ -1,5 +1,4 @@
 import React from 'react';
-import images from '../../../images';
 import Card from '../Card';
 
 const PlayerHand = ({ cards = [] }) => {

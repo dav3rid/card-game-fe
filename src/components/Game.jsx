@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import * as api from '../api';
-import PlayerCards from './board/player/PlayerCards';
-import EnemyCards from './board/enemy/EnemyCards';
+import Cards from './board/Cards';
 
 class Game extends Component {
   state = {
@@ -35,8 +34,8 @@ class Game extends Component {
     const { playerRole, enemyRole, game_state } = this.state;
     return (
       <div className="board">
-        <EnemyCards cards={game_state[enemyRole] || {}} />
-        <PlayerCards cards={game_state[playerRole] || {}} />
+        <Cards role="enemy" cards={game_state[enemyRole] || {}} />
+        <Cards role="player" cards={game_state[playerRole] || {}} />
         {/* <OpponentFinalHand cards={opponentFinalHand} />
         <BurnedDeck />
         <PickupDeck cards={currentGameDeck} />
