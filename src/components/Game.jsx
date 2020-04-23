@@ -7,7 +7,7 @@ class Game extends Component {
     host_id: null,
     opponent_id: null,
     current_turn_id: null,
-    game_state: { host: {}, opponent: {} },
+    game_state: {},
     playerRole: null,
   };
 
@@ -35,6 +35,11 @@ class Game extends Component {
     return (
       <div className="board">
         <Cards role="enemy" cards={game_state[enemyRole] || {}} />
+        {/* <Cards role="neutral" cards={game_state[enemyRole] || {}} /> */}
+        <div className="burned-deck">BURNED DECK</div>
+        <div className="pickup-deck">PICKUP DECK</div>
+        <div className="playable-deck">PLAYABLE DECK</div>
+        <div className="feed">feed</div>
         <Cards role="player" cards={game_state[playerRole] || {}} />
         {/* <OpponentFinalHand cards={opponentFinalHand} />
         <BurnedDeck />

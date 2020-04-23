@@ -88,8 +88,10 @@ exports.getNewGameState = () => {
       penultimateHand: [],
       finalHand: opponentFinalHand,
     },
-    pickupDeck: newDeck,
-    playableDeck: [],
+    neutral: {
+      pickupDeck: newDeck,
+      playableDeck: [],
+    },
     topCardValue: 0,
   };
 };
