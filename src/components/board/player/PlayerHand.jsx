@@ -1,15 +1,16 @@
 import React from 'react';
 import Card from '../Card';
 
-const PlayerHand = ({ cards = [] }) => {
-  console.log(cards);
+const PlayerHand = ({ cards = [], handleClick }) => {
   return (
     <div className="player-hand">
-      {cards.map(card => {
+      {cards.map((card, index) => {
         return (
           <Card
             card={card}
-            // handleClick={}
+            index={index}
+            isPlayable={true}
+            handleClick={handleClick}
             key={card}
           />
         );

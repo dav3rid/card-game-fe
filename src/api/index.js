@@ -55,6 +55,18 @@ exports.joinGame = (game_id, opponent_id) => {
   );
 };
 
+exports.patchGame = (game_id, game_state) => {
+  return request.patch(`/games/${game_id}`, { game_state }).then(
+    ({
+      data: {
+        game: { game_state },
+      },
+    }) => {
+      return game_state;
+    }
+  );
+};
+
 exports.deleteGame = host_id => {
   return request.delete(`/games?host_id=${host_id}`);
 };

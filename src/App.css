@@ -17,6 +17,10 @@ img {
   margin-left: 2px;
   margin-right: 2px;
 }
+.playable-card:hover {
+  border-style: solid;
+  border-color: blue;
+}
 
 .enemy-hand {
   grid-area: 1 / 1 / 3 / 4;
