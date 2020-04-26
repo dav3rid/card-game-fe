@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
+import socket from '../api/socket';
 import * as api from '../api';
-import Section from './board/Section';
+
+import EnemyHand from './board/enemy/EnemyHand';
+import EnemyPenultimateHand from './board/enemy/EnemyPenultimateHand';
+import EnemyFinalHand from './board/enemy/EnemyFinalHand';
+import PlayerHand from './board/player/PlayerHand';
+import PlayerPenultimateHand from './board/player/PlayerPenultimateHand';
+import PlayerFinalHand from './board/player/PlayerFinalHand';
 
 class Game extends Component {
   state = {
     host_id: null,
     opponent_id: null,
     current_turn_id: null,
-    game_state: {},
-    playerRole: null,
+    game_state: {
+      host: {},
+      opponent: {},
+    },
   };
 
   componentDidMount() {
@@ -30,20 +39,34 @@ class Game extends Component {
   }
 
   render() {
-    const { game_id } = this.props;
-    const { playerRole, enemyRole, game_state } = this.state;
+    const { game_id, user_id } = this.props;
+    const { playerRole, enemyRole, current_turn_id, game_state } = this.state;
+
     return (
       <div className="board">
-        <Section role="enemy" cards={game_state[enemyRole] || {}} />
-        {/* <Cards role="neutral" cards={game_state[enemyRole] || {}} /> */}
+        <EnemyHand cards={enemyRole && game_state[enemyRole].hand} />
+        <EnemyPenultimateHand
+          cards={enemyRole && game_state[enemyRole].penultimateHand}
+        />
+        <EnemyFinalHand cards={enemyRole && game_state[enemyRole].finalHand} />
         <div className="burned-deck">BURNED DECK</div>
         <div className="pickup-deck">PICKUP DECK</div>
         <div className="playable-deck">PLAYABLE DECK</div>
         <div className="feed">feed</div>
-        <Section role="player" cards={game_state[playerRole] || {}} />
+        <PlayerHand cards={playerRole && game_state[playerRole].hand} />
+        <PlayerPenultimateHand
+          cards={playerRole && game_state[playerRole].penultimateHand}
+        />
+        <PlayerFinalHand
+          cards={playerRole && game_state[playerRole].finalHand}
+        />
       </div>
     );
   }
+
+  updateGameState = () => {
+    // patch game first!!!!
+  };
 }
 
 export default Game;

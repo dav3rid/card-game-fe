@@ -2,10 +2,17 @@ import React from 'react';
 import Card from '../Card';
 
 const PlayerHand = ({ cards = [] }) => {
+  console.log(cards);
   return (
     <div className="player-hand">
       {cards.map(card => {
-        return <Card card={card} key={card} />;
+        return (
+          <Card
+            card={card}
+            // handleClick={}
+            key={card}
+          />
+        );
       })}
       <br />
       Player Hand
