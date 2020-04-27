@@ -68,6 +68,22 @@ const createShuffledDeck = () => {
   return shuffledDeck;
 };
 
+const getCardValue = card => {
+  if ('JQKA'.includes(card[0])) {
+    const values = { J: 11, Q: 12, K: 13, A: 14 };
+    return values[card[0]];
+  }
+  return +card[0];
+};
+
+const getValidStartingValues = hand => {
+  return hand.reduce((valuesOverTwo, card) => {
+    const cardValue = getCardValue(card);
+    if (cardValue > 2) valuesOverTwo.push(cardValue);
+    return valuesOverTwo;
+  }, []);
+};
+
 exports.getNewGameState = () => {
   const newDeck = createShuffledDeck();
 
@@ -96,6 +112,13 @@ exports.getNewGameState = () => {
   };
 };
 
-// const getCardValue = card => {};
+exports.getFirstTurnId = (host_id, opponent_id, hostHand, opponentHand) => {
+  const hostValidValues = getValidStartingValues(hostHand);
+  const opponentValidValues = getValidStartingValues(opponentHand);
+
+  return Math.min(...hostValidValues) <= Math.min(...opponentValidValues)
+    ? host_id
+    : opponent_id;
+};
 
 // module.exports = { getNewGameState };

@@ -14,8 +14,7 @@ class GamesList extends Component {
   render() {
     const { games } = this.state;
     const { user_id, navigate } = this.props;
-    console.log('in games list render');
-    // console.log(games);
+
     return (
       <div>
         {games.map(game => {

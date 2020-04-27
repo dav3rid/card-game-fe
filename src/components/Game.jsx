@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import socket from '../api/socket';
 import * as api from '../api';
+import * as game from '../game';
 
 import EnemyHand from './board/enemy/EnemyHand';
 import EnemyPenultimateHand from './board/enemy/EnemyPenultimateHand';
@@ -27,10 +28,7 @@ class Game extends Component {
       if (playerId === user_id) this.updateGameState();
     });
     socket.on('enemy chosen penultimate', ({ playerId }) => {
-      if (playerId === user_id)
-        this.setState({ enemyChosen: true }, () => {
-          console.log(this.state);
-        });
+      if (playerId === user_id) this.setState({ enemyChosen: true });
     });
     api
       .getGameById(game_id)
@@ -49,7 +47,7 @@ class Game extends Component {
   }
 
   render() {
-    const { game_id, user_id } = this.props;
+    // const { game_id, user_id } = this.props;
     const { playerRole, enemyRole, current_turn_id, game_state } = this.state;
     return (
       <div className="board">
@@ -65,6 +63,7 @@ class Game extends Component {
         <PlayerHand
           cards={playerRole && game_state[playerRole].hand}
           handleClick={!current_turn_id && this.pushToPenultimateHand}
+          // pushToPlayableDeck
         />
         <PlayerPenultimateHand
           cards={playerRole && game_state[playerRole].penultimateHand}
@@ -102,11 +101,19 @@ class Game extends Component {
   };
 
   handlePlayerChosen = () => {
-    const { playerRole, enemyRole, enemyChosen, game_state } = this.state;
+    const {
+      host_id,
+      opponent_id,
+      enemyRole,
+      enemyChosen,
+      game_state: { host, opponent },
+    } = this.state;
     // const lowestCard1
     if (enemyChosen) {
       console.log('ready to start!!!');
-      // ready to start
+      console.log(
+        game.getFirstTurnId(host_id, opponent_id, host.hand, opponent.hand)
+      );
     } else {
       socket.emit('chosen penultimate', {
         targetUserId: this.state[`${enemyRole}_id`],
