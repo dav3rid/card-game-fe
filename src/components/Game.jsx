@@ -19,12 +19,19 @@ class Game extends Component {
       opponent: {},
     },
     enemyChosen: false,
-    enemyLowest: null,
   };
 
   componentDidMount() {
     const { user_id, game_id } = this.props;
-    socket.on('update game state', this.updateGameState);
+    socket.on('update game state', ({ playerId }) => {
+      if (playerId === user_id) this.updateGameState();
+    });
+    socket.on('enemy chosen penultimate', ({ playerId }) => {
+      if (playerId === user_id)
+        this.setState({ enemyChosen: true }, () => {
+          console.log(this.state);
+        });
+    });
     api
       .getGameById(game_id)
       .then(({ host_id, opponent_id, current_turn_id, game_state }) => {
@@ -44,7 +51,6 @@ class Game extends Component {
   render() {
     const { game_id, user_id } = this.props;
     const { playerRole, enemyRole, current_turn_id, game_state } = this.state;
-    console.log(game_state);
     return (
       <div className="board">
         <EnemyHand cards={enemyRole && game_state[enemyRole].hand} />
@@ -58,12 +64,7 @@ class Game extends Component {
         <div className="feed">feed</div>
         <PlayerHand
           cards={playerRole && game_state[playerRole].hand}
-          handleClick={
-            !current_turn_id &&
-            playerRole &&
-            game_state[playerRole].penultimateHand.length < 3 &&
-            this.pushToPenultimateHand
-          }
+          handleClick={!current_turn_id && this.pushToPenultimateHand}
         />
         <PlayerPenultimateHand
           cards={playerRole && game_state[playerRole].penultimateHand}
@@ -84,24 +85,32 @@ class Game extends Component {
 
   pushToPenultimateHand = (card, indexInHand) => {
     const { game_id } = this.props;
-    const { playerRole, game_state } = this.state;
-    game_state[playerRole].hand.splice(indexInHand, 1);
-    game_state[playerRole].penultimateHand.push(card);
-    api.patchGame(game_id, game_state).then(game_state => {
-      socket.emit('update game state');
-      this.setState({ game_state });
-    });
-    // if (game_state[playerRole].penultimateHand.length === 3) {
-    //   this.handlePlayerChosen();
-    // }
+    const { playerRole, enemyRole, game_state } = this.state;
+    if (game_state[playerRole].hand.length > 3) {
+      game_state[playerRole].hand.splice(indexInHand, 1);
+      game_state[playerRole].penultimateHand.push(card);
+      api.patchGame(game_id, game_state).then(game_state => {
+        socket.emit('update game state', {
+          targetUserId: this.state[`${enemyRole}_id`],
+        });
+        this.setState({ game_state });
+        if (game_state[playerRole].penultimateHand.length === 3) {
+          this.handlePlayerChosen();
+        }
+      });
+    }
   };
 
   handlePlayerChosen = () => {
-    const { playerRole, enemyChosen, game_state } = this.state;
+    const { playerRole, enemyRole, enemyChosen, game_state } = this.state;
     // const lowestCard1
     if (enemyChosen) {
+      console.log('ready to start!!!');
       // ready to start
     } else {
+      socket.emit('chosen penultimate', {
+        targetUserId: this.state[`${enemyRole}_id`],
+      });
     }
   };
 }

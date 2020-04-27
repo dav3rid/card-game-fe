@@ -5,7 +5,6 @@ import Nav from './components/Nav';
 import Login from './components/Login';
 import GamesList from './components/GamesList';
 import HostGame from './components/HostGame';
-// import JoinGame from './components/JoinGame';
 import Game from './components/Game';
 
 class App extends React.Component {
@@ -17,17 +16,7 @@ class App extends React.Component {
     },
   };
 
-  // componentDidMount() {
-  //   console.log('App mount');
-  //   const socket = io('https://card-game-be.herokuapp.com');
-  //   socket.on('welcome', ({ msg }) => {
-  //     console.log(msg);
-  //   });
-  //   this.setState({ socket });
-  // }
-
   render() {
-    console.log('App render');
     const {
       user: { user_id, name },
     } = this.state;
@@ -45,7 +34,6 @@ class App extends React.Component {
             </Router>
           </>
         )}
-        {/* {activeGameID && <Game socket={socket} activeGameID={activeGameID} />} */}
       </div>
     );
   }

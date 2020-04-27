@@ -95,3 +95,7 @@ exports.getNewGameState = () => {
     topCardValue: 0,
   };
 };
+
+// const getCardValue = card => {};
+
+// module.exports = { getNewGameState };
