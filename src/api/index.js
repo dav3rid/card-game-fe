@@ -19,6 +19,7 @@ exports.postUser = name => {
 };
 
 // GAMES
+// GET
 exports.getGameById = game_id => {
   return request.get(`/games/${game_id}`).then(({ data: { game } }) => {
     return game;
@@ -31,6 +32,7 @@ exports.getAvailableGames = () => {
   });
 };
 
+// POST
 exports.hostGame = gameInfo => {
   return request.post('/games', gameInfo).then(
     ({
@@ -43,6 +45,7 @@ exports.hostGame = gameInfo => {
   );
 };
 
+// PATCH
 exports.joinGame = (game_id, opponent_id) => {
   return request.patch(`/games/${game_id}`, { opponent_id }).then(
     ({
@@ -55,7 +58,7 @@ exports.joinGame = (game_id, opponent_id) => {
   );
 };
 
-exports.patchGame = (game_id, game_state) => {
+exports.updateGameState = (game_id, game_state) => {
   return request.patch(`/games/${game_id}`, { game_state }).then(
     ({
       data: {
@@ -67,6 +70,19 @@ exports.patchGame = (game_id, game_state) => {
   );
 };
 
+exports.setFirstTurnId = (game_id, current_turn_id) => {
+  return request.patch(`/games/${game_id}`, { current_turn_id }).then(
+    ({
+      data: {
+        game: { current_turn_id },
+      },
+    }) => {
+      return current_turn_id;
+    }
+  );
+};
+
+// DELETE
 exports.deleteGame = host_id => {
   return request.delete(`/games?host_id=${host_id}`);
 };
