@@ -77,10 +77,10 @@ const getCardValue = card => {
 };
 
 const getValidStartingValues = hand => {
-  return hand.reduce((valuesOverTwo, card) => {
+  return hand.reduce((valuesOverThree, card) => {
     const cardValue = getCardValue(card);
-    if (cardValue > 2) valuesOverTwo.push(cardValue);
-    return valuesOverTwo;
+    if (cardValue > 3) valuesOverThree.push(cardValue);
+    return valuesOverThree;
   }, []);
 };
 
