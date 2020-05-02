@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '../Card';
 
 const EnemyHand = ({ cards = [] }) => {
+  console.log(cards, 'in enemy hand');
   return (
     <div className="enemy-hand">
       {cards.map(card => {

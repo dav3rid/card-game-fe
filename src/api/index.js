@@ -58,16 +58,13 @@ exports.joinGame = (game_id, opponent_id) => {
   );
 };
 
-exports.updateGameState = (game_id, game_state) => {
-  return request.patch(`/games/${game_id}`, { game_state }).then(
-    ({
-      data: {
-        game: { game_state },
-      },
-    }) => {
-      return game_state;
-    }
-  );
+// To make move - update game state and current turn id
+exports.updateGameState = (game_id, game_state, current_turn_id) => {
+  return request
+    .patch(`/games/${game_id}`, { game_state, current_turn_id })
+    .then(({ data: { game } }) => {
+      return game;
+    });
 };
 
 exports.setFirstTurnId = (game_id, current_turn_id) => {

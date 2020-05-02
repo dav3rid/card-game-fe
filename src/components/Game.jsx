@@ -32,23 +32,33 @@ class Game extends Component {
     });
     api
       .getGameById(game_id)
-      .then(({ host_id, opponent_id, current_turn_id, game_state }) => {
-        const playerRole = user_id === host_id ? 'host' : 'opponent';
-        const enemyRole = user_id === host_id ? 'opponent' : 'host';
-        this.setState({
+      .then(
+        ({
           host_id,
           opponent_id,
           current_turn_id,
           game_state,
-          playerRole,
-          enemyRole,
-        });
-      });
+          topCardValue,
+        }) => {
+          const playerRole = user_id === host_id ? 'host' : 'opponent';
+          const enemyRole = user_id === host_id ? 'opponent' : 'host';
+          this.setState({
+            host_id,
+            opponent_id,
+            current_turn_id,
+            game_state,
+            topCardValue,
+            playerRole,
+            enemyRole,
+          });
+        }
+      );
   }
 
   render() {
     const { game_id, user_id } = this.props;
     const { playerRole, enemyRole, current_turn_id, game_state } = this.state;
+    console.log(enemyRole, '<---------');
     return (
       <div className="board">
         <EnemyHand cards={enemyRole && game_state[enemyRole].hand} />
@@ -66,7 +76,7 @@ class Game extends Component {
             !current_turn_id
               ? this.pushToPenultimateHand
               : user_id === current_turn_id
-              ? () => console.log('your turn')
+              ? () => console.log('player turn')
               : () => console.log('enemy turn')
           }
           // pushToPlayableDeck
@@ -86,6 +96,32 @@ class Game extends Component {
     api.getGameById(game_id).then(({ game_state, current_turn_id }) => {
       this.setState({ game_state, current_turn_id });
     });
+  };
+
+  playCard = (card, indexInHand) => {
+    const { game_id } = this.props;
+    const {
+      host_id,
+      opponent_id,
+      current_turn_id,
+      playerRole,
+      enemyRole,
+      game_state,
+    } = this.state;
+
+    game_state[playerRole].hand.splice(indexInHand, 1);
+    game_state.neutral.playableDeck.push(card);
+
+    const newTurnId = current_turn_id === host_id ? opponent_id : host_id;
+
+    api.updateGameState(game_id, game_state, newTurnId).then(
+      ({ game_state, current_turn_id }) => {
+        this.setState({ game_state, current_turn_id });
+      },
+      () => {
+        console.log(this.state);
+      }
+    );
   };
 
   pushToPenultimateHand = (card, indexInHand) => {
