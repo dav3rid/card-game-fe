@@ -73,7 +73,6 @@ class Game extends Component {
               ? this.playCard
               : () => console.log('enemy turn')
           }
-          // pushToPlayableDeck
         />
         <PlayerPenultimateHand
           cards={playerRole && game_state[playerRole].penultimateHand}
@@ -97,15 +96,21 @@ class Game extends Component {
     const { game_id } = this.props;
     const { playerRole, enemyRole, game_state } = this.state;
 
-    game_state[playerRole].hand.splice(indexInHand, 1);
-    game_state.neutral.playableDeck.push(card);
+    if (game.isPlayable(card, game_state.topCardValue)) {
+      const cardValue = game.getCardValue(card);
+      game_state[playerRole].hand.splice(indexInHand, 1);
+      game_state.neutral.playableDeck.push(card);
+      game_state.topCardValue = cardValue;
 
-    api.updateGameState(game_id, game_state).then(game_state => {
-      socket.emit('update game state', {
-        targetUserId: this.state[`${enemyRole}_id`],
+      api.updateGameState(game_id, game_state).then(game_state => {
+        socket.emit('update game state', {
+          targetUserId: this.state[`${enemyRole}_id`],
+        });
+        this.setState({ game_state });
       });
-      this.setState({ game_state });
-    });
+    } else {
+      console.log('invalid card');
+    }
   };
 
   pushToPenultimateHand = (card, indexInHand) => {

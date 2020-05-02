@@ -76,6 +76,15 @@ const getCardValue = card => {
   return +card[0];
 };
 
+const isPlayable = (card, topCardValue = 0) => {
+  const cardValue = getCardValue(card);
+  const powerCardValues = [2, 3, 10];
+  // Catch 7s first
+  if (topCardValue === 7) return cardValue <= 7;
+  if (powerCardValues.includes(cardValue)) return true;
+  return cardValue >= topCardValue;
+};
+
 const getValidStartingValues = hand => {
   return hand.reduce((valuesOverThree, card) => {
     const cardValue = getCardValue(card);
@@ -84,7 +93,7 @@ const getValidStartingValues = hand => {
   }, []);
 };
 
-exports.getNewGameState = () => {
+const getNewGameState = () => {
   const newDeck = createShuffledDeck();
 
   const hostFinalHand = newDeck.splice(-3, 3);
@@ -112,7 +121,7 @@ exports.getNewGameState = () => {
   };
 };
 
-exports.getFirstTurnId = (host_id, opponent_id, hostHand, opponentHand) => {
+const getFirstTurnId = (host_id, opponent_id, hostHand, opponentHand) => {
   const hostValidValues = getValidStartingValues(hostHand);
   const opponentValidValues = getValidStartingValues(opponentHand);
 
@@ -121,4 +130,10 @@ exports.getFirstTurnId = (host_id, opponent_id, hostHand, opponentHand) => {
     : opponent_id;
 };
 
-// module.exports = { getNewGameState };
+module.exports = {
+  getCardValue,
+  isPlayable,
+  getValidStartingValues,
+  getNewGameState,
+  getFirstTurnId,
+};
