@@ -6,6 +6,9 @@ import * as game from '../game';
 import EnemyHand from './board/enemy/EnemyHand';
 import EnemyPenultimateHand from './board/enemy/EnemyPenultimateHand';
 import EnemyFinalHand from './board/enemy/EnemyFinalHand';
+
+import PlayableDeck from './board/neutral/PlayableDeck';
+
 import PlayerHand from './board/player/PlayerHand';
 import PlayerPenultimateHand from './board/player/PlayerPenultimateHand';
 import PlayerFinalHand from './board/player/PlayerFinalHand';
@@ -18,6 +21,7 @@ class Game extends Component {
     game_state: {
       host: {},
       opponent: {},
+      neutral: {},
     },
     enemyChosen: false,
   };
@@ -58,7 +62,7 @@ class Game extends Component {
         <EnemyFinalHand cards={enemyRole && game_state[enemyRole].finalHand} />
         <div className="burned-deck">BURNED DECK</div>
         <div className="pickup-deck">PICKUP DECK</div>
-        <div className="playable-deck">PLAYABLE DECK</div>
+        <PlayableDeck cards={game_state.neutral.playableDeck} />
         <div className="feed">feed</div>
         <PlayerHand
           cards={playerRole && game_state[playerRole].hand}
@@ -66,7 +70,7 @@ class Game extends Component {
             !current_turn_id
               ? this.pushToPenultimateHand
               : user_id === current_turn_id
-              ? () => console.log('your turn')
+              ? this.playCard
               : () => console.log('enemy turn')
           }
           // pushToPlayableDeck
@@ -85,6 +89,22 @@ class Game extends Component {
     const { game_id } = this.props;
     api.getGameById(game_id).then(({ game_state, current_turn_id }) => {
       this.setState({ game_state, current_turn_id });
+    });
+  };
+
+  playCard = (card, indexInHand) => {
+    console.log('Playing Card');
+    const { game_id } = this.props;
+    const { playerRole, enemyRole, game_state } = this.state;
+
+    game_state[playerRole].hand.splice(indexInHand, 1);
+    game_state.neutral.playableDeck.push(card);
+
+    api.updateGameState(game_id, game_state).then(game_state => {
+      socket.emit('update game state', {
+        targetUserId: this.state[`${enemyRole}_id`],
+      });
+      this.setState({ game_state });
     });
   };
 
