@@ -30,7 +30,7 @@ class App extends React.Component {
             <Router>
               <GamesList path="/games" user_id={user_id} />
               <HostGame path="/host-game" user_id={user_id} />
-              <Game path="/games/:game_id" user_id={user_id} />
+              <Game path="/games/:game_id" user_id={user_id} user_name={name} />
             </Router>
           </>
         )}

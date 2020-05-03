@@ -76,8 +76,14 @@ const getCardValue = card => {
   return +card[0];
 };
 
-const isPlayable = (card, topCardValue = 0) => {
+const isPlayable = (card, topCardValue = 0, cardPlayedThisTurn) => {
   const cardValue = getCardValue(card);
+  // if a card has already been played this turn
+  if (cardPlayedThisTurn) {
+    if (topCardValue === 8) return cardValue >= 8;
+    // if not 8, can only match
+    return cardValue === topCardValue;
+  }
   const powerCardValues = [2, 3, 10];
   // Catch 7s first
   if (topCardValue === 7) return cardValue <= 7;
@@ -116,6 +122,7 @@ const getNewGameState = () => {
     neutral: {
       pickupDeck: newDeck,
       playableDeck: [],
+      burnedDeck: [],
     },
     topCardValue: 0,
   };
