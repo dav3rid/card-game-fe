@@ -82,7 +82,9 @@ const PlayerHand = ({
         (user_id === current_turn_id ? 'Your Turn' : 'Enemy Turn')}
       {user_id === current_turn_id &&
         cardPlayedThisTurn &&
-        hand.length >= 3 && <button onClick={endTurn}>End Turn</button>}
+        (hand.length >= 3 || game_state.neutral.pickupDeck.length === 0) && (
+          <button onClick={endTurn}>End Turn</button>
+        )}
     </div>
   );
 };
