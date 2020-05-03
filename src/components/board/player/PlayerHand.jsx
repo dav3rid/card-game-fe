@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../Card';
 
-const PlayerHand = ({ cards = [], handleClick }) => {
+const PlayerHand = ({ cards = [], handleClick, endTurn }) => {
   return (
     <div className="player-hand">
       {cards.map((card, index) => {
@@ -17,7 +17,7 @@ const PlayerHand = ({ cards = [], handleClick }) => {
       })}
       <br />
       Player Hand
-      {/* {isPlayerTurn && <h4>Your turn!</h4>} */}
+      <button onClick={endTurn}>End Turn</button>
     </div>
   );
 };

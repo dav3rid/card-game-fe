@@ -70,7 +70,7 @@ exports.updateGameState = (game_id, game_state) => {
   );
 };
 
-exports.setFirstTurnId = (game_id, current_turn_id) => {
+exports.setTurnId = (game_id, current_turn_id) => {
   return request.patch(`/games/${game_id}`, { current_turn_id }).then(
     ({
       data: {

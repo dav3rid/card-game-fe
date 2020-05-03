@@ -24,6 +24,7 @@ class Game extends Component {
       neutral: {},
     },
     enemyChosen: false,
+    cardPlayedThisTurn: false,
   };
 
   componentDidMount() {
@@ -73,6 +74,7 @@ class Game extends Component {
               ? this.playCard
               : () => console.log('enemy turn')
           }
+          endTurn={this.endTurn}
         />
         <PlayerPenultimateHand
           cards={playerRole && game_state[playerRole].penultimateHand}
@@ -94,10 +96,18 @@ class Game extends Component {
   playCard = (card, indexInHand) => {
     console.log('Playing Card');
     const { game_id } = this.props;
-    const { playerRole, enemyRole, game_state } = this.state;
+    const {
+      playerRole,
+      enemyRole,
+      game_state,
+      cardPlayedThisTurn,
+    } = this.state;
 
-    if (game.isPlayable(card, game_state.topCardValue)) {
-      const cardValue = game.getCardValue(card);
+    const cardValue = game.getCardValue(card);
+    if (
+      (cardPlayedThisTurn && cardValue === game_state.topCardValue) ||
+      (!cardPlayedThisTurn && game.isPlayable(card, game_state.topCardValue))
+    ) {
       game_state[playerRole].hand.splice(indexInHand, 1);
       game_state.neutral.playableDeck.push(card);
       game_state.topCardValue = cardValue;
@@ -106,7 +116,7 @@ class Game extends Component {
         socket.emit('update game state', {
           targetUserId: this.state[`${enemyRole}_id`],
         });
-        this.setState({ game_state });
+        this.setState({ game_state, cardPlayedThisTurn: true });
       });
     } else {
       console.log('invalid card');
@@ -148,7 +158,7 @@ class Game extends Component {
         host.hand,
         opponent.hand
       );
-      api.setFirstTurnId(game_id, firstTurnPlayerId).then(current_turn_id => {
+      api.setTurnId(game_id, firstTurnPlayerId).then(current_turn_id => {
         socket.emit('update game state', {
           targetUserId: this.state[`${enemyRole}_id`],
         });
@@ -159,6 +169,20 @@ class Game extends Component {
         targetUserId: this.state[`${enemyRole}_id`],
       });
     }
+  };
+
+  endTurn = () => {
+    const { game_id } = this.props;
+    const { host_id, opponent_id, current_turn_id, enemyRole } = this.state;
+
+    const newTurnId = current_turn_id === host_id ? opponent_id : host_id;
+
+    api.setTurnId(game_id, newTurnId).then(current_turn_id => {
+      socket.emit('update game state', {
+        targetUserId: this.state[`${enemyRole}_id`],
+      });
+      this.setState({ current_turn_id, cardPlayedThisTurn: false });
+    });
   };
 }
 
