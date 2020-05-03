@@ -77,7 +77,9 @@ const PlayerHand = ({
       })}
       <br />
       Player Hand
-      <button onClick={endTurn}>End Turn</button>
+      {user_id === current_turn_id && (
+        <button onClick={endTurn}>End Turn</button>
+      )}
     </div>
   );
 };

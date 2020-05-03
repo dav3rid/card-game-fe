@@ -3,6 +3,9 @@ import images from '../../images';
 
 const Card = ({ card = 'back', index, isPlayable, handleClick }) => {
   if (!handleClick) handleClick = () => {};
+  // const limit = () => {
+
+  // }
   return (
     <img
       className={isPlayable ? 'playable-card' : 'card'}

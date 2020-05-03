@@ -66,15 +66,24 @@ class Game extends Component {
         <div className="burned-deck">BURNED DECK</div>
         {/* <div className="pickup-deck">PICKUP DECK</div> */}
         <PickupDeck
-
-        // cards={game_state.neutral.pickupDeck}
-        // pickUpCard={
-        //   playerRole &&
-        //   game_state[playerRole].hand.length < 3 &&
-        //   this.pickUpCard
-        // }
+          user_id={user_id}
+          {...this.state}
+          cards={game_state.neutral.pickupDeck}
+          updateGameState={this.updateGameState}
+          // cards={game_state.neutral.pickupDeck}
+          // pickUpCard={
+          //   playerRole &&
+          //   game_state[playerRole].hand.length < 3 &&
+          //   this.pickUpCard
+          // }
         />
-        <PlayableDeck cards={game_state.neutral.playableDeck} />
+        <PlayableDeck
+          user_id={user_id}
+          {...this.state}
+          cards={game_state.neutral.playableDeck}
+          updateGameState={this.updateGameState}
+          endTurn={this.endTurn}
+        />
         <div className="feed">feed</div>
         <PlayerHand
           user_id={user_id}
@@ -84,15 +93,6 @@ class Game extends Component {
           updateCurrentTurnId={this.updateCurrentTurnId}
           emitMessage={this.emitMessage}
           setCardPlayedThisTurn={this.setCardPlayedThisTurn}
-          // handleClick={
-          //   !current_turn_id
-          //     ? this.pushToPenultimateHand
-          //     : user_id === current_turn_id &&
-          //       (game_state[playerRole].hand.length >= 3 ||
-          //         game_state.neutral.pickupDeck.length === 0)
-          //     ? this.playCard
-          //     : () => console.log('enemy turn')
-          // }
           endTurn={this.endTurn}
         />
         <PlayerPenultimateHand
@@ -124,7 +124,7 @@ class Game extends Component {
     const { game_id } = this.props;
     api.setTurnId(game_id, newTurnId).then(current_turn_id => {
       this.emitMessage('update game state');
-      this.setState({ current_turn_id });
+      this.setState({ current_turn_id, cardPlayedThisTurn: false });
     });
   };
 
@@ -169,20 +169,20 @@ class Game extends Component {
   //   }
   // };
 
-  pickUpCard = () => {
-    const { game_id } = this.props;
-    const { playerRole, enemyRole, game_state } = this.state;
+  // pickUpCard = () => {
+  //   const { game_id } = this.props;
+  //   const { playerRole, enemyRole, game_state } = this.state;
 
-    const newCard = game_state.neutral.pickupDeck.splice(-1, 1)[0];
-    game_state[playerRole].hand.push(newCard);
+  //   const newCard = game_state.neutral.pickupDeck.splice(-1, 1)[0];
+  //   game_state[playerRole].hand.push(newCard);
 
-    api.updateGameState(game_id, game_state).then(game_state => {
-      socket.emit('update game state', {
-        targetUserId: this.state[`${enemyRole}_id`],
-      });
-      this.setState({ game_state });
-    });
-  };
+  //   api.updateGameState(game_id, game_state).then(game_state => {
+  //     socket.emit('update game state', {
+  //       targetUserId: this.state[`${enemyRole}_id`],
+  //     });
+  //     this.setState({ game_state });
+  //   });
+  // };
 
   // pushToPenultimateHand = (card, indexInHand) => {
   //   const { game_id } = this.props;
@@ -233,17 +233,9 @@ class Game extends Component {
   // };
 
   endTurn = () => {
-    const { game_id } = this.props;
-    const { host_id, opponent_id, current_turn_id, enemyRole } = this.state;
-
+    const { host_id, opponent_id, current_turn_id } = this.state;
     const newTurnId = current_turn_id === host_id ? opponent_id : host_id;
-
-    api.setTurnId(game_id, newTurnId).then(current_turn_id => {
-      socket.emit('update game state', {
-        targetUserId: this.state[`${enemyRole}_id`],
-      });
-      this.setState({ current_turn_id, cardPlayedThisTurn: false });
-    });
+    this.updateCurrentTurnId(newTurnId);
   };
 }
 
