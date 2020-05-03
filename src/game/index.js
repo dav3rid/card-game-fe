@@ -82,7 +82,7 @@ export const isPlayable = (card, topCardValue = 0, cardPlayedThisTurn) => {
   if (cardPlayedThisTurn) {
     if (topCardValue === 8) return cardValue >= 8;
     // if not 8, can only match
-    return cardValue === topCardValue || cardValue === 3;
+    return cardValue === topCardValue;
   }
   const powerCardValues = [2, 3, 10];
   // Catch 7s first

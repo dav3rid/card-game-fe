@@ -64,7 +64,11 @@ const PlayerHand = ({
       {hand.map((card, index) => {
         const isPlayable =
           !current_turn_id ||
-          game.isPlayable(card, game_state.topCardValue, cardPlayedThisTurn);
+          game.isPlayable(
+            card,
+            card[0] === '3' ? 3 : game_state.topCardValue,
+            cardPlayedThisTurn
+          );
         return (
           <Card
             card={card}

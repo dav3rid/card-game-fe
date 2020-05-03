@@ -26,11 +26,16 @@ const PlayableDeck = ({
     game_state.topCardValue = 0;
     updateGameState(game_state, () => setCardPlayedThisTurn(false));
   };
-  const isBurnable = game_state.topCardValue === 10;
+  const isBurnable =
+    game_state.topCardValue === 10 ||
+    game_state.neutral.playableCards.slice(-4).every(card => {
+      return (
+        game.getCardValue(card) ===
+        game.getCardValue(...game_state.neutral.playableCards.slice(-1))
+      );
+    });
   // potential OR here - burn deck on 4 consecutive cards
-  // game_state.neutral.playableCards.slice(-4).every(card => {
-  //   return game.getCardValue(card) === game_state.topCardValue
-  // });
+
   const isPlayable = // can pick up top card
     user_id === current_turn_id &&
     game_state[playerRole].hand.every(card => {
