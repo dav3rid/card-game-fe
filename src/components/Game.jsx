@@ -54,6 +54,7 @@ class Game extends Component {
   }
 
   render() {
+    console.log(this.state);
     const { user_id } = this.props;
     const { playerRole, enemyRole, game_state } = this.state;
     return (
@@ -75,6 +76,7 @@ class Game extends Component {
           {...this.state}
           cards={game_state.neutral.playableDeck}
           updateGameState={this.updateGameState}
+          setCardPlayedThisTurn={this.setCardPlayedThisTurn}
           endTurn={this.endTurn}
         />
         <div className="feed">feed</div>
@@ -106,6 +108,7 @@ class Game extends Component {
   };
 
   updateGameState = (newGameState, cb) => {
+    console.log(newGameState, '<-----');
     const { game_id } = this.props;
     api.updateGameState(game_id, newGameState).then(game_state => {
       this.emitMessage('update game state');

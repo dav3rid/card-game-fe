@@ -7,6 +7,8 @@ const BurnedDeck = ({ cards = [] }) => {
       {cards.length > 0 && <Card card={cards[cards.length - 1]} />}
       <br />
       Burned Deck
+      <br />
+      Cards: {cards.length}
     </div>
   );
 };

@@ -14,13 +14,15 @@ const PlayableDeck = ({
   endTurn,
 }) => {
   const pickUpCards = () => {
+    console.log('picking up cards');
     game_state[playerRole].hand.push(...cards);
-    game_state.neutral.playableCards = [];
+    game_state.neutral.playableDeck = [];
+    game_state.topCardValue = 0;
     updateGameState(game_state, endTurn);
   };
   const burnCards = () => {
     game_state.neutral.burnedDeck.push(...cards);
-    game_state.neutral.playableCards = [];
+    game_state.neutral.playableDeck = [];
     game_state.topCardValue = 0;
     updateGameState(game_state, () => setCardPlayedThisTurn(false));
   };
@@ -49,6 +51,8 @@ const PlayableDeck = ({
       )}
       <br />
       Playable Deck
+      <br />
+      Cards: {cards.length}
     </div>
   );
 };

@@ -27,6 +27,8 @@ const PickupDeck = ({
       )}
       <br />
       Pickup Deck
+      <br />
+      Cards: {cards.length}
     </div>
   );
 };
