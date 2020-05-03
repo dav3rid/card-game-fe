@@ -4,9 +4,7 @@ import Card from '../Card';
 const PlayableDeck = ({ cards = [] }) => {
   return (
     <div className="playable-deck">
-      {cards.map(card => {
-        return <Card key={card} card={card} />;
-      })}
+      {cards.length > 0 && <Card card={cards[cards.length - 1]} />}
       <br />
       Playable Deck
     </div>

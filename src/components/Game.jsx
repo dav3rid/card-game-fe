@@ -7,6 +7,7 @@ import EnemyHand from './board/enemy/EnemyHand';
 import EnemyPenultimateHand from './board/enemy/EnemyPenultimateHand';
 import EnemyFinalHand from './board/enemy/EnemyFinalHand';
 
+import PickupDeck from './board/neutral/PickupDeck';
 import PlayableDeck from './board/neutral/PlayableDeck';
 
 import PlayerHand from './board/player/PlayerHand';
@@ -62,7 +63,15 @@ class Game extends Component {
         />
         <EnemyFinalHand cards={enemyRole && game_state[enemyRole].finalHand} />
         <div className="burned-deck">BURNED DECK</div>
-        <div className="pickup-deck">PICKUP DECK</div>
+        {/* <div className="pickup-deck">PICKUP DECK</div> */}
+        <PickupDeck
+          cards={game_state.neutral.pickupDeck}
+          pickUpCard={
+            playerRole &&
+            game_state[playerRole].hand.length < 3 &&
+            this.pickUpCard
+          }
+        />
         <PlayableDeck cards={game_state.neutral.playableDeck} />
         <div className="feed">feed</div>
         <PlayerHand
@@ -70,7 +79,9 @@ class Game extends Component {
           handleClick={
             !current_turn_id
               ? this.pushToPenultimateHand
-              : user_id === current_turn_id
+              : user_id === current_turn_id &&
+                (game_state[playerRole].hand.length >= 3 ||
+                  game_state.neutral.pickupDeck.length === 0)
               ? this.playCard
               : () => console.log('enemy turn')
           }
@@ -121,6 +132,21 @@ class Game extends Component {
     } else {
       console.log('invalid card');
     }
+  };
+
+  pickUpCard = () => {
+    const { game_id } = this.props;
+    const { playerRole, enemyRole, game_state } = this.state;
+
+    const newCard = game_state.neutral.pickupDeck.splice(-1, 1)[0];
+    game_state[playerRole].hand.push(newCard);
+
+    api.updateGameState(game_id, game_state).then(game_state => {
+      socket.emit('update game state', {
+        targetUserId: this.state[`${enemyRole}_id`],
+      });
+      this.setState({ game_state });
+    });
   };
 
   pushToPenultimateHand = (card, indexInHand) => {

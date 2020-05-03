@@ -69,8 +69,8 @@ const createShuffledDeck = () => {
 };
 
 const getCardValue = card => {
-  if ('JQKA'.includes(card[0])) {
-    const values = { J: 11, Q: 12, K: 13, A: 14 };
+  if ('1JQKA'.includes(card[0])) {
+    const values = { '1': 10, J: 11, Q: 12, K: 13, A: 14 };
     return values[card[0]];
   }
   return +card[0];
