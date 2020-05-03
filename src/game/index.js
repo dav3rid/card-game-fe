@@ -122,6 +122,7 @@ const getNewGameState = () => {
     neutral: {
       pickupDeck: newDeck,
       playableDeck: [],
+      burnedDeck: [],
     },
     topCardValue: 0,
   };

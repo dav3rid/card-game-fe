@@ -45,7 +45,7 @@ const PlayerHand = ({
     game_state[playerRole].hand.splice(indexInHand, 1);
     game_state.neutral.playableDeck.push(card);
     if (cardValue !== 3) game_state.topCardValue = cardValue;
-    updateGameState(game_state, setCardPlayedThisTurn);
+    updateGameState(game_state, () => setCardPlayedThisTurn(true));
   };
 
   const getHandleClick = () => {
@@ -77,9 +77,12 @@ const PlayerHand = ({
       })}
       <br />
       Player Hand
-      {user_id === current_turn_id && (
-        <button onClick={endTurn}>End Turn</button>
-      )}
+      <br />
+      {current_turn_id &&
+        (user_id === current_turn_id ? 'Your Turn' : 'Enemy Turn')}
+      {user_id === current_turn_id &&
+        cardPlayedThisTurn &&
+        hand.length >= 3 && <button onClick={endTurn}>End Turn</button>}
     </div>
   );
 };

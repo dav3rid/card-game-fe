@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import socket from '../api/socket';
 import * as api from '../api';
-import * as game from '../game';
 
 import EnemyHand from './board/enemy/EnemyHand';
 import EnemyPenultimateHand from './board/enemy/EnemyPenultimateHand';
@@ -9,6 +8,7 @@ import EnemyFinalHand from './board/enemy/EnemyFinalHand';
 
 import PickupDeck from './board/neutral/PickupDeck';
 import PlayableDeck from './board/neutral/PlayableDeck';
+import BurnedDeck from './board/neutral/BurnedDeck';
 
 import PlayerHand from './board/player/PlayerHand';
 import PlayerPenultimateHand from './board/player/PlayerPenultimateHand';
@@ -54,8 +54,8 @@ class Game extends Component {
   }
 
   render() {
-    const { game_id, user_id } = this.props;
-    const { playerRole, enemyRole, current_turn_id, game_state } = this.state;
+    const { user_id } = this.props;
+    const { playerRole, enemyRole, game_state } = this.state;
     return (
       <div className="board">
         <EnemyHand cards={enemyRole && game_state[enemyRole].hand} />
@@ -63,19 +63,12 @@ class Game extends Component {
           cards={enemyRole && game_state[enemyRole].penultimateHand}
         />
         <EnemyFinalHand cards={enemyRole && game_state[enemyRole].finalHand} />
-        <div className="burned-deck">BURNED DECK</div>
-        {/* <div className="pickup-deck">PICKUP DECK</div> */}
+        <BurnedDeck cards={game_state.neutral.burnedDeck} />
         <PickupDeck
           user_id={user_id}
           {...this.state}
           cards={game_state.neutral.pickupDeck}
           updateGameState={this.updateGameState}
-          // cards={game_state.neutral.pickupDeck}
-          // pickUpCard={
-          //   playerRole &&
-          //   game_state[playerRole].hand.length < 3 &&
-          //   this.pickUpCard
-          // }
         />
         <PlayableDeck
           user_id={user_id}
@@ -135,8 +128,8 @@ class Game extends Component {
     });
   };
 
-  setCardPlayedThisTurn = () => {
-    this.setState({ cardPlayedThisTurn: true });
+  setCardPlayedThisTurn = bool => {
+    this.setState({ cardPlayedThisTurn: bool });
   };
 
   // playCard = (card, indexInHand) => {

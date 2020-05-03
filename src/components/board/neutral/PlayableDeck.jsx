@@ -10,8 +10,25 @@ const PlayableDeck = ({
   cardPlayedThisTurn,
   cards = [],
   updateGameState,
+  setCardPlayedThisTurn,
   endTurn,
 }) => {
+  const pickUpCards = () => {
+    game_state[playerRole].hand.push(...cards);
+    game_state.neutral.playableCards = [];
+    updateGameState(game_state, endTurn);
+  };
+  const burnCards = () => {
+    game_state.neutral.burnedDeck.push(...cards);
+    game_state.neutral.playableCards = [];
+    game_state.topCardValue = 0;
+    updateGameState(game_state, () => setCardPlayedThisTurn(false));
+  };
+  const isBurnable = game_state.topCardValue === 10;
+  // potential OR here - burn deck on 4 consecutive cards
+  // game_state.neutral.playableCards.slice(-4).every(card => {
+  //   return game.getCardValue(card) === game_state.topCardValue
+  // });
   const isPlayable = // can pick up top card
     user_id === current_turn_id &&
     game_state[playerRole].hand.every(card => {
@@ -21,18 +38,13 @@ const PlayableDeck = ({
         cardPlayedThisTurn
       );
     });
-  const pickUpCards = () => {
-    game_state[playerRole].hand.push(...cards);
-    game_state.neutral.playableCards = [];
-    updateGameState(game_state, endTurn);
-  };
   return (
     <div className="playable-deck">
       {cards.length > 0 && (
         <Card
           card={cards[cards.length - 1]}
           isPlayable={isPlayable}
-          handleClick={isPlayable && pickUpCards}
+          handleClick={isBurnable ? burnCards : isPlayable && pickUpCards}
         />
       )}
       <br />
