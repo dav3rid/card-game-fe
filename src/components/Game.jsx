@@ -23,6 +23,7 @@ class Game extends Component {
       host: {},
       opponent: {},
       neutral: {},
+      topCardValue: 0,
     },
     enemyChosen: false,
     cardPlayedThisTurn: false,
@@ -31,7 +32,7 @@ class Game extends Component {
   componentDidMount() {
     const { user_id, game_id } = this.props;
     socket.on('update game state', ({ playerId }) => {
-      if (playerId === user_id) this.updateGame();
+      if (playerId === user_id) this.getUpdatedGame();
     });
     socket.on('enemy chosen penultimate', ({ playerId }) => {
       if (playerId === user_id) this.setState({ enemyChosen: true });
@@ -65,26 +66,33 @@ class Game extends Component {
         <div className="burned-deck">BURNED DECK</div>
         {/* <div className="pickup-deck">PICKUP DECK</div> */}
         <PickupDeck
-          cards={game_state.neutral.pickupDeck}
-          pickUpCard={
-            playerRole &&
-            game_state[playerRole].hand.length < 3 &&
-            this.pickUpCard
-          }
+
+        // cards={game_state.neutral.pickupDeck}
+        // pickUpCard={
+        //   playerRole &&
+        //   game_state[playerRole].hand.length < 3 &&
+        //   this.pickUpCard
+        // }
         />
         <PlayableDeck cards={game_state.neutral.playableDeck} />
         <div className="feed">feed</div>
         <PlayerHand
-          cards={playerRole && game_state[playerRole].hand}
-          handleClick={
-            !current_turn_id
-              ? this.pushToPenultimateHand
-              : user_id === current_turn_id &&
-                (game_state[playerRole].hand.length >= 3 ||
-                  game_state.neutral.pickupDeck.length === 0)
-              ? this.playCard
-              : () => console.log('enemy turn')
-          }
+          user_id={user_id}
+          {...this.state}
+          hand={playerRole && game_state[playerRole].hand}
+          updateGameState={this.updateGameState}
+          updateCurrentTurnId={this.updateCurrentTurnId}
+          emitMessage={this.emitMessage}
+          setCardPlayedThisTurn={this.setCardPlayedThisTurn}
+          // handleClick={
+          //   !current_turn_id
+          //     ? this.pushToPenultimateHand
+          //     : user_id === current_turn_id &&
+          //       (game_state[playerRole].hand.length >= 3 ||
+          //         game_state.neutral.pickupDeck.length === 0)
+          //     ? this.playCard
+          //     : () => console.log('enemy turn')
+          // }
           endTurn={this.endTurn}
         />
         <PlayerPenultimateHand
@@ -97,42 +105,69 @@ class Game extends Component {
     );
   }
 
-  updateGame = () => {
+  emitMessage = msg => {
+    const { enemyRole } = this.state;
+    socket.emit(msg, {
+      targetUserId: this.state[`${enemyRole}_id`],
+    });
+  };
+
+  updateGameState = (newGameState, cb) => {
+    const { game_id } = this.props;
+    api.updateGameState(game_id, newGameState).then(game_state => {
+      this.emitMessage('update game state');
+      this.setState({ game_state }, cb);
+    });
+  };
+
+  updateCurrentTurnId = newTurnId => {
+    const { game_id } = this.props;
+    api.setTurnId(game_id, newTurnId).then(current_turn_id => {
+      this.emitMessage('update game state');
+      this.setState({ current_turn_id });
+    });
+  };
+
+  getUpdatedGame = () => {
     const { game_id } = this.props;
     api.getGameById(game_id).then(({ game_state, current_turn_id }) => {
       this.setState({ game_state, current_turn_id });
     });
   };
 
-  playCard = (card, indexInHand) => {
-    console.log('Playing Card');
-    const { game_id } = this.props;
-    const {
-      playerRole,
-      enemyRole,
-      game_state,
-      cardPlayedThisTurn,
-    } = this.state;
-
-    const cardValue = game.getCardValue(card);
-    if (
-      (cardPlayedThisTurn && cardValue === game_state.topCardValue) ||
-      (!cardPlayedThisTurn && game.isPlayable(card, game_state.topCardValue))
-    ) {
-      game_state[playerRole].hand.splice(indexInHand, 1);
-      game_state.neutral.playableDeck.push(card);
-      game_state.topCardValue = cardValue;
-
-      api.updateGameState(game_id, game_state).then(game_state => {
-        socket.emit('update game state', {
-          targetUserId: this.state[`${enemyRole}_id`],
-        });
-        this.setState({ game_state, cardPlayedThisTurn: true });
-      });
-    } else {
-      console.log('invalid card');
-    }
+  setCardPlayedThisTurn = () => {
+    this.setState({ cardPlayedThisTurn: true });
   };
+
+  // playCard = (card, indexInHand) => {
+  //   console.log('Playing Card');
+  //   const { game_id } = this.props;
+  //   const {
+  //     playerRole,
+  //     enemyRole,
+  //     game_state,
+  //     cardPlayedThisTurn,
+  //   } = this.state;
+
+  //   const cardValue = game.getCardValue(card);
+  //   if (
+  //     (cardPlayedThisTurn && cardValue === game_state.topCardValue) ||
+  //     (!cardPlayedThisTurn && game.isPlayable(card, game_state.topCardValue))
+  //   ) {
+  //     game_state[playerRole].hand.splice(indexInHand, 1);
+  //     game_state.neutral.playableDeck.push(card);
+  //     game_state.topCardValue = cardValue;
+
+  //     api.updateGameState(game_id, game_state).then(game_state => {
+  //       socket.emit('update game state', {
+  //         targetUserId: this.state[`${enemyRole}_id`],
+  //       });
+  //       this.setState({ game_state, cardPlayedThisTurn: true });
+  //     });
+  //   } else {
+  //     console.log('invalid card');
+  //   }
+  // };
 
   pickUpCard = () => {
     const { game_id } = this.props;
@@ -149,53 +184,53 @@ class Game extends Component {
     });
   };
 
-  pushToPenultimateHand = (card, indexInHand) => {
-    const { game_id } = this.props;
-    const { playerRole, enemyRole, game_state } = this.state;
-    if (game_state[playerRole].hand.length > 3) {
-      game_state[playerRole].hand.splice(indexInHand, 1);
-      game_state[playerRole].penultimateHand.push(card);
-      api.updateGameState(game_id, game_state).then(game_state => {
-        socket.emit('update game state', {
-          targetUserId: this.state[`${enemyRole}_id`],
-        });
-        this.setState({ game_state });
-        if (game_state[playerRole].penultimateHand.length === 3) {
-          this.handlePlayerChosen();
-        }
-      });
-    }
-  };
+  // pushToPenultimateHand = (card, indexInHand) => {
+  //   const { game_id } = this.props;
+  //   const { playerRole, enemyRole, game_state } = this.state;
+  //   if (game_state[playerRole].hand.length > 3) {
+  //     game_state[playerRole].hand.splice(indexInHand, 1);
+  //     game_state[playerRole].penultimateHand.push(card);
+  //     api.updateGameState(game_id, game_state).then(game_state => {
+  //       socket.emit('update game state', {
+  //         targetUserId: this.state[`${enemyRole}_id`],
+  //       });
+  //       this.setState({ game_state });
+  //       if (game_state[playerRole].penultimateHand.length === 3) {
+  //         this.handlePlayerChosen();
+  //       }
+  //     });
+  //   }
+  // };
 
-  handlePlayerChosen = () => {
-    const { game_id } = this.props;
-    const {
-      host_id,
-      opponent_id,
-      enemyRole,
-      enemyChosen,
-      game_state: { host, opponent },
-    } = this.state;
-    if (enemyChosen) {
-      console.log('ready to start!!!');
-      const firstTurnPlayerId = game.getFirstTurnId(
-        host_id,
-        opponent_id,
-        host.hand,
-        opponent.hand
-      );
-      api.setTurnId(game_id, firstTurnPlayerId).then(current_turn_id => {
-        socket.emit('update game state', {
-          targetUserId: this.state[`${enemyRole}_id`],
-        });
-        this.setState({ current_turn_id });
-      });
-    } else {
-      socket.emit('chosen penultimate', {
-        targetUserId: this.state[`${enemyRole}_id`],
-      });
-    }
-  };
+  // handlePlayerChosen = () => {
+  //   const { game_id } = this.props;
+  //   const {
+  //     host_id,
+  //     opponent_id,
+  //     enemyRole,
+  //     enemyChosen,
+  //     game_state: { host, opponent },
+  //   } = this.state;
+  //   if (enemyChosen) {
+  //     console.log('ready to start!!!');
+  //     const firstTurnPlayerId = game.getFirstTurnId(
+  //       host_id,
+  //       opponent_id,
+  //       host.hand,
+  //       opponent.hand
+  //     );
+  //     api.setTurnId(game_id, firstTurnPlayerId).then(current_turn_id => {
+  //       socket.emit('update game state', {
+  //         targetUserId: this.state[`${enemyRole}_id`],
+  //       });
+  //       this.setState({ current_turn_id });
+  //     });
+  //   } else {
+  //     socket.emit('chosen penultimate', {
+  //       targetUserId: this.state[`${enemyRole}_id`],
+  //     });
+  //   }
+  // };
 
   endTurn = () => {
     const { game_id } = this.props;
