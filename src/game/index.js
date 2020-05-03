@@ -68,7 +68,7 @@ const createShuffledDeck = () => {
   return shuffledDeck;
 };
 
-const getCardValue = card => {
+export const getCardValue = card => {
   if ('1JQKA'.includes(card[0])) {
     const values = { '1': 10, J: 11, Q: 12, K: 13, A: 14 };
     return values[card[0]];
@@ -76,7 +76,7 @@ const getCardValue = card => {
   return +card[0];
 };
 
-const isPlayable = (card, topCardValue = 0, cardPlayedThisTurn) => {
+export const isPlayable = (card, topCardValue = 0, cardPlayedThisTurn) => {
   const cardValue = getCardValue(card);
   // if a card has already been played this turn
   if (cardPlayedThisTurn) {
@@ -91,7 +91,7 @@ const isPlayable = (card, topCardValue = 0, cardPlayedThisTurn) => {
   return cardValue >= topCardValue;
 };
 
-const getValidStartingValues = hand => {
+export const getValidStartingValues = hand => {
   return hand.reduce((valuesOverThree, card) => {
     const cardValue = getCardValue(card);
     if (cardValue > 3) valuesOverThree.push(cardValue);
@@ -99,7 +99,7 @@ const getValidStartingValues = hand => {
   }, []);
 };
 
-const getNewGameState = () => {
+export const getNewGameState = () => {
   const newDeck = createShuffledDeck();
 
   const hostFinalHand = newDeck.splice(-3, 3);
@@ -128,7 +128,12 @@ const getNewGameState = () => {
   };
 };
 
-const getFirstTurnId = (host_id, opponent_id, hostHand, opponentHand) => {
+export const getFirstTurnId = (
+  host_id,
+  opponent_id,
+  hostHand,
+  opponentHand
+) => {
   const hostValidValues = getValidStartingValues(hostHand);
   const opponentValidValues = getValidStartingValues(opponentHand);
 
@@ -137,10 +142,10 @@ const getFirstTurnId = (host_id, opponent_id, hostHand, opponentHand) => {
     : opponent_id;
 };
 
-module.exports = {
-  getCardValue,
-  isPlayable,
-  getValidStartingValues,
-  getNewGameState,
-  getFirstTurnId,
-};
+// module.exports = {
+//   getCardValue,
+//   isPlayable,
+//   getValidStartingValues,
+//   getNewGameState,
+//   getFirstTurnId,
+// };
