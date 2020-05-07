@@ -28,12 +28,13 @@ const PlayableDeck = ({
   };
   const isBurnable =
     game_state.topCardValue === 10 ||
-    game_state.neutral.playableCards.slice(-4).every(card => {
-      return (
-        game.getCardValue(card) ===
-        game.getCardValue(...game_state.neutral.playableCards.slice(-1))
-      );
-    });
+    (game_state.neutral.playableCards &&
+      game_state.neutral.playableCards.slice(-4).every(card => {
+        return (
+          game.getCardValue(card) ===
+          game.getCardValue(...game_state.neutral.playableCards.slice(-1))
+        );
+      }));
   // potential OR here - burn deck on 4 consecutive cards
 
   const isPlayable = // can pick up top card
